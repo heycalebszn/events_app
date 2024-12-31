@@ -34,6 +34,7 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
     const [email, setEmail] = useState("")
     const [showMagicLinkDialog, setShowMagicLinkDialog] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -42,10 +43,15 @@ export function LoginForm({
     }
 
     const handleSocialSignIn = async (provider: "github" | "google") => {
-        if (provider === "google") {
-            window.location.href = "/api/auth/google"
-        } else {
-            toast.success(`Demo: Would sign in with ${provider}`)
+        setIsLoading(true)
+        try {
+            if (provider === "google") {
+                window.location.href = "/api/auth/google"
+            } else {
+                toast.success(`Demo: Would sign in with ${provider}`)
+            }
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -92,6 +98,7 @@ export function LoginForm({
                                                 variant="outline" 
                                                 className="w-full p-0"
                                                 onClick={() => handleSocialSignIn("github")}
+                                                disabled={isLoading}
                                             >
                                                 <GithubIcon />
                                                 <span className="sr-only">GitHub</span>
@@ -109,6 +116,7 @@ export function LoginForm({
                                                 variant="outline" 
                                                 className="w-full p-0"
                                                 onClick={() => handleSocialSignIn("google")}
+                                                disabled={isLoading}
                                             >
                                                 <ChromeIcon />
                                                 <span className="sr-only">Google</span>
@@ -125,6 +133,7 @@ export function LoginForm({
                                             <Button 
                                                 variant="outline" 
                                                 className="w-full p-0"
+                                                disabled={isLoading}
                                                 onClick={() => toast.success("Demo: Would sign in with Passkey")}
                                             >
                                                 <FingerprintIcon />
@@ -155,25 +164,27 @@ export function LoginForm({
                 and <a href="/privacy-policy">Privacy Policy</a>.
             </div>
 
-            <AlertDialog open={showMagicLinkDialog} onOpenChange={setShowMagicLinkDialog}>
-                <AlertDialogContent className="flex flex-col items-center text-center">
-                    <AlertDialogHeader>
-                        <div className="h-12 w-12 text-black">
-                            <CircleCheckIcon />
-                        </div>
-                        <AlertDialogTitle className="text-2xl font-bold">
-                            Login Link Sent !
-                        </AlertDialogTitle>
-                        <AlertDialogDescription className="text-sm text-muted-foreground">
-                            We&apos;ve sent a magic link to {email}. Click the continue button in the email to login. 
-                            If you don&apos;t see the email in your inbox, check your spam folder.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter className="flex flex-col gap-2 sm:flex-row">
-                        <AlertDialogCancel onClick={resetForm}>Try Another Email</AlertDialogCancel>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            {email && (
+                <AlertDialog open={showMagicLinkDialog} onOpenChange={setShowMagicLinkDialog}>
+                    <AlertDialogContent className="flex flex-col items-center text-center">
+                        <AlertDialogHeader>
+                            <div className="h-12 w-12 text-black">
+                                <CircleCheckIcon />
+                            </div>
+                            <AlertDialogTitle className="text-2xl font-bold">
+                                Login Link Sent !
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-sm text-muted-foreground">
+                                We&apos;ve sent a magic link to {email}. Click the continue button in the email to login. 
+                                If you don&apos;t see the email in your inbox, check your spam folder.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="flex flex-col gap-2 sm:flex-row">
+                            <AlertDialogCancel onClick={resetForm}>Try Another Email</AlertDialogCancel>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     )
 }
