@@ -41,8 +41,12 @@ export function LoginForm({
         toast.success("Demo: Magic link would be sent here")
     }
 
-    const handleSocialSignIn = (provider: "github" | "google") => {
-        toast.success(`Demo: Would sign in with ${provider}`)
+    const handleSocialSignIn = async (provider: "github" | "google") => {
+        if (provider === "google") {
+            window.location.href = "/api/auth/google"
+        } else {
+            toast.success(`Demo: Would sign in with ${provider}`)
+        }
     }
 
     const resetForm = () => {
