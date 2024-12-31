@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model OauthAccount {
+  providerId     String
+  providerUserId String
+  userEmail      String
+  userName       String
+  userAvatarURL  String
+  userId         String?  @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, providerUserId])
+  @@map("oauth_account")
+}
+
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+
+  @@index([userId])
+}
+
+model User {
+  id                 String    @id
+  email              String?   @unique
+  password           String?
+  emailVerified      Boolean   @default(false)
+  verificationCode   String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  oauthAccount       OauthAccount?
+  session            Session[]
+  profile            Profile?
+  role               Role      @default(ATTENDEE)  
+}
+
+model Profile {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String   @db.Text
+  email     String   @db.Text
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
+enum Role {
+  ADMIN
+  ORGANIZER
+  ATTENDEE
+}

@@ -1,4 +1,6 @@
 'use client'
+
+import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -10,20 +12,59 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip"
+import {
+    AlertDialog,
+    AlertDialogContent,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogCancel,
+} from "@/components/ui/alert-dialog"
 import ChromeIcon from "@/components/icons/chrome"
 import { GithubIcon } from "@/components/icons/github"
 import { FingerprintIcon } from "@/components/icons/fingerprint"
+import { CircleCheckIcon } from "@/components/icons/circle-check"
 import Image from "next/image"
+import { toast } from "sonner"
 
 export function LoginForm({
     className,
     ...props
 }: React.ComponentProps<"div">) {
+    const [email, setEmail] = useState("")
+    const [showMagicLinkDialog, setShowMagicLinkDialog] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
+
+    const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        setShowMagicLinkDialog(true)
+        toast.success("Demo: Magic link would be sent here")
+    }
+
+    const handleSocialSignIn = async (provider: "github" | "google") => {
+        setIsLoading(true)
+        try {
+            if (provider === "google") {
+                window.location.href = "/api/auth/google"
+            } else {
+                toast.success(`Demo: Would sign in with ${provider}`)
+            }
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const resetForm = () => {
+        setEmail("");
+        setShowMagicLinkDialog(false);
+    };
+
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
             <Card className="overflow-hidden">
                 <CardContent className="grid p-0 md:grid-cols-2">
-                    <form className="p-6 md:p-8">
+                    <form className="p-6 md:p-8" onSubmit={handleEmailSubmit}>
                         <div className="flex flex-col gap-6">
                             <div className="flex flex-col items-center text-center">
                                 <h1 className="text-2xl font-bold">Welcome</h1>
@@ -37,7 +78,8 @@ export function LoginForm({
                                     id="email"
                                     type="email"
                                     placeholder="m@example.com"
-                                    required
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
                             <Button type="submit" className="w-full">
@@ -52,9 +94,14 @@ export function LoginForm({
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button variant="outline" className="w-full p-0">
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full p-0"
+                                                onClick={() => handleSocialSignIn("github")}
+                                                disabled={isLoading}
+                                            >
                                                 <GithubIcon />
-                                                <span className="sr-only"> GitHub</span>
+                                                <span className="sr-only">GitHub</span>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent className="hidden lg:block">
@@ -62,13 +109,17 @@ export function LoginForm({
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button variant="outline" className="w-full p-0">
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full p-0"
+                                                onClick={() => handleSocialSignIn("google")}
+                                                disabled={isLoading}
+                                            >
                                                 <ChromeIcon />
-                                                <span className="sr-only"> Google</span>
+                                                <span className="sr-only">Google</span>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent className="hidden lg:block">
@@ -76,13 +127,17 @@ export function LoginForm({
                                         </TooltipContent>
                                     </Tooltip>
                                 </TooltipProvider>
-
                                 <TooltipProvider>
                                     <Tooltip>
                                         <TooltipTrigger asChild>
-                                            <Button variant="outline" className="w-full p-0">
+                                            <Button 
+                                                variant="outline" 
+                                                className="w-full p-0"
+                                                disabled={isLoading}
+                                                onClick={() => toast.success("Demo: Would sign in with Passkey")}
+                                            >
                                                 <FingerprintIcon />
-                                                <span className="sr-only"> Passkeys</span>
+                                                <span className="sr-only">Passkeys</span>
                                             </Button>
                                         </TooltipTrigger>
                                         <TooltipContent className="hidden lg:block">
@@ -105,9 +160,31 @@ export function LoginForm({
                 </CardContent>
             </Card>
             <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-                By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
-                and <a href="#">Privacy Policy</a>.
+                By clicking continue, you agree to our <a href="/terms">Terms of Service</a>{" "}
+                and <a href="/privacy-policy">Privacy Policy</a>.
             </div>
+
+            {email && (
+                <AlertDialog open={showMagicLinkDialog} onOpenChange={setShowMagicLinkDialog}>
+                    <AlertDialogContent className="flex flex-col items-center text-center">
+                        <AlertDialogHeader>
+                            <div className="h-12 w-12 text-black">
+                                <CircleCheckIcon />
+                            </div>
+                            <AlertDialogTitle className="text-2xl font-bold">
+                                Login Link Sent !
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-sm text-muted-foreground">
+                                We&apos;ve sent a magic link to {email}. Click the continue button in the email to login. 
+                                If you don&apos;t see the email in your inbox, check your spam folder.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="flex flex-col gap-2 sm:flex-row">
+                            <AlertDialogCancel onClick={resetForm}>Try Another Email</AlertDialogCancel>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
+            )}
         </div>
     )
 }
