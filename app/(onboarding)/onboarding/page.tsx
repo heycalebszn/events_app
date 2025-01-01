@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Onboarding | Events Palour",
-    description: "Let us know more about you",
+    description: "Let us get you onboarded",
 };
 
 export default function OnboardingPage() {

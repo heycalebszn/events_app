@@ -12,7 +12,7 @@ export default async function LoginPage() {
   const { user } = await getCurrentSession()
   
   if (user) {
-    redirect("/dashboard/attendee")
+    redirect("/get-started")  
   }
 
   return (
