@@ -1,4 +1,3 @@
-// components/auth/logout.tsx
 "use client";
 
 import { logoutAction } from "@/app/api/auth/action";
@@ -8,7 +7,7 @@ import { useRouter } from "next/navigation";
 
 export function LogoutButton() {
   const router = useRouter();
-  
+
   const handleLogout = async () => {
     await logoutAction();
     toast.success("Logged out successfully");

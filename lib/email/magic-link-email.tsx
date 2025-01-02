@@ -21,7 +21,7 @@ export const MagicLinkEmail = ({ magicLink }: MagicLinkEmailProps) => (
       <Body style={main}>
           <Container style={container}>
               <Section>
-                  <Text style={heading}>Welcome to Events Palour!</Text>
+                  <Text style={heading}>Let&apos;s get you signed in</Text>
                   <Text style={text}>
                       Click the button below to sign in to your account. This link will expire in 10 minutes.
                   </Text>
