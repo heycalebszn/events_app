@@ -63,7 +63,7 @@ export async function GET(request: Request): Promise<Response> {
 
     let user = await getUserFromGoogleId(googleId);
     if (!user) {
-      user = await createUser(googleId, email, name, picture);
+      user = await createUser("google", googleId, email, name, picture);
     }
 
     const sessionToken = generateSessionToken();

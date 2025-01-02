@@ -1,3 +1,4 @@
+// user.ts
 import { prisma } from "@/lib/server/db";
 import { v4 as uuidv4 } from "uuid";
 
@@ -17,13 +18,29 @@ export async function getUserFromGoogleId(googleId: string) {
   return oauthAccount?.user || null;
 }
 
+export async function getUserFromGitHubId(githubId: string) {
+  const oauthAccount = await prisma.oauthAccount.findUnique({
+    where: {
+      providerId_providerUserId: {
+        providerId: "github",
+        providerUserId: githubId // Now expecting a string
+      }
+    },
+    include: {
+      user: true
+    }
+  });
+
+  return oauthAccount?.user || null;
+}
+
 export async function createUser(
-  googleId: string,
+  providerId: "google" | "github",
+  providerUserId: string, // Now explicitly typed as string
   email: string,
   name: string | null,
   avatarUrl: string | null
 ) {
-  // First check if a user with this email already exists
   const existingUser = await prisma.user.findUnique({
     where: { email },
     include: {
@@ -33,12 +50,11 @@ export async function createUser(
   });
 
   if (existingUser) {
-    // If user exists but doesn't have a Google OAuth account, add it
-    if (!existingUser.oauthAccount) {
+    if (!existingUser.oauthAccount || existingUser.oauthAccount.providerId !== providerId) {
       await prisma.oauthAccount.create({
         data: {
-          providerId: "google",
-          providerUserId: googleId,
+          providerId,
+          providerUserId, // Will now be string
           userEmail: email,
           userName: name || email.split("@")[0],
           userAvatarURL: avatarUrl || "",
@@ -49,7 +65,6 @@ export async function createUser(
     return existingUser;
   }
 
-  // If no user exists, create a new one with all associated data
   const userId = uuidv4();
 
   const user = await prisma.user.create({
@@ -67,8 +82,8 @@ export async function createUser(
       },
       oauthAccount: {
         create: {
-          providerId: "google",
-          providerUserId: googleId,
+          providerId,
+          providerUserId, // Will now be string
           userEmail: email,
           userName: name || email.split("@")[0],
           userAvatarURL: avatarUrl || ""
