@@ -1,104 +1,78 @@
-import { prisma } from "./db";
-import type { User } from "@prisma/client";
+import { prisma } from "@/lib/server/db";
+import { v4 as uuidv4 } from "uuid";
 
-// Google authentication functions 
+export async function getUserFromGoogleId(googleId: string) {
+  const oauthAccount = await prisma.oauthAccount.findUnique({
+    where: {
+      providerId_providerUserId: {
+        providerId: "google",
+        providerUserId: googleId
+      }
+    },
+    include: {
+      user: true
+    }
+  });
+
+  return oauthAccount?.user || null;
+}
+
 export async function createUser(
   googleId: string,
   email: string,
-  name: string,
-  picture: string
-): Promise<User> {
-  const user = await prisma.user.create({
-    data: {
-      id: googleId, 
-      email,
-      emailVerified: true,
-      profile: {
-        create: {
-          name,
-          imageUrl: picture,
-          email
-        }
-      },
-      oauthAccount: {
-        create: {
-          providerId: 'google',
+  name: string | null,
+  avatarUrl: string | null
+) {
+  // First check if a user with this email already exists
+  const existingUser = await prisma.user.findUnique({
+    where: { email },
+    include: {
+      profile: true,
+      oauthAccount: true
+    }
+  });
+
+  if (existingUser) {
+    // If user exists but doesn't have a Google OAuth account, add it
+    if (!existingUser.oauthAccount) {
+      await prisma.oauthAccount.create({
+        data: {
+          providerId: "google",
           providerUserId: googleId,
           userEmail: email,
-          userName: name,
-          userAvatarURL: picture
+          userName: name || email.split("@")[0],
+          userAvatarURL: avatarUrl || "",
+          userId: existingUser.id
         }
-      }
-    },
-    include: {
-      profile: true,
-      oauthAccount: true
+      });
     }
-  });
+    return existingUser;
+  }
 
-  return user;
-}
+  // If no user exists, create a new one with all associated data
+  const userId = uuidv4();
 
-export async function getUserFromGoogleId(googleId: string): Promise<User | null> {
-  const user = await prisma.user.findUnique({
-    where: {
-      id: googleId
-    },
-    include: {
-      profile: true,
-      oauthAccount: true
-    }
-  });
-
-  return user;
-}
-
-// GitHub authentication functions
-export async function createGitHubUser(
-  githubId: number,
-  email: string,
-  username: string,
-  avatarUrl: string
-): Promise<User> {
-  const githubIdString = githubId.toString();
   const user = await prisma.user.create({
     data: {
-      id: githubIdString,
-      email,
+      id: userId,
+      email: email,
       emailVerified: true,
       profile: {
         create: {
-          name: username,
-          imageUrl: avatarUrl,
-          email
+          id: uuidv4(),
+          name: name || email.split("@")[0],
+          imageUrl: avatarUrl || "",
+          email: email
         }
       },
       oauthAccount: {
         create: {
-          providerId: 'github',
-          providerUserId: githubIdString,
+          providerId: "google",
+          providerUserId: googleId,
           userEmail: email,
-          userName: username,
-          userAvatarURL: avatarUrl
+          userName: name || email.split("@")[0],
+          userAvatarURL: avatarUrl || ""
         }
-      }
-    },
-    include: {
-      profile: true,
-      oauthAccount: true
-    }
-  });
-
-  return user;
-}
-
-export async function getUserFromGitHubId(githubId: number): Promise<User | null> {
-  const githubIdString = githubId.toString();
-  const user = await prisma.user.findFirst({
-    where: {
-      oauthAccount: {
-        providerId: 'github',
-        providerUserId: githubIdString
       }
     },
     include: {

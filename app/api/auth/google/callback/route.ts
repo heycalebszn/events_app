@@ -1,5 +1,4 @@
-
-import { generateSessionToken, createSession, setSessionTokenCookie } from "@/lib/server/session";
+import { generateSessionToken, createSession } from "@/lib/server/session";
 import { google } from "@/lib/server/oauth";
 import { cookies } from "next/headers";
 import { createUser, getUserFromGoogleId } from "@/lib/server/user";
@@ -16,24 +15,38 @@ export async function GET(request: Request): Promise<Response> {
     const url = new URL(request.url);
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
-    
+
+    // Fix: await the cookies() call
     const cookieStore = await cookies();
     const storedState = cookieStore.get("google_oauth_state")?.value;
     const codeVerifier = cookieStore.get("google_code_verifier")?.value;
 
     if (!code || !state || !storedState || !codeVerifier || state !== storedState) {
+      console.error("Invalid OAuth state or missing parameters", {
+        code: !!code,
+        state: !!state,
+        storedState: !!storedState,
+        codeVerifier: !!codeVerifier,
+        stateMatch: state === storedState
+      });
       return new Response("Invalid authentication state. Please try again.", {
         status: 400
       });
     }
 
     const tokens = await google.validateAuthorizationCode(code, codeVerifier);
-    if (!tokens || !tokens.idToken()) {
+    
+    if (!tokens || !tokens.idToken) {
+      console.error("No tokens received from Google");
       throw new Error("Failed to validate authorization code");
     }
 
-    const claims = decodeIdToken(tokens.idToken());
+    // Fix: Call the idToken function to get the string value
+    const idTokenString = tokens.idToken();
+    const claims = await decodeIdToken(idTokenString);
+    
     if (!claims) {
+      console.error("Failed to decode ID token");
       throw new Error("Failed to decode ID token");
     }
 
@@ -44,6 +57,7 @@ export async function GET(request: Request): Promise<Response> {
     const email = parser.getString("email");
 
     if (!googleId || !email) {
+      console.error("Missing required user information", { googleId: !!googleId, email: !!email });
       throw new Error("Missing required user information");
     }
 
@@ -55,24 +69,29 @@ export async function GET(request: Request): Promise<Response> {
     const sessionToken = generateSessionToken();
     const session = await createSession(sessionToken, user.id);
 
-    // Clear OAuth cookies
-    const response = new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/"
-      }
+    // Create headers array for cookies
+    const headers = new Headers({
+      'Location': '/'
     });
 
-    setSessionTokenCookie(sessionToken, session.expiresAt);
-    
-    // Clear the OAuth state cookies
-    cookieStore.delete("google_oauth_state");
-    cookieStore.delete("google_code_verifier");
+    // Set session cookie
+    headers.append('Set-Cookie', `session=${sessionToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Expires=${session.expiresAt.toUTCString()}`);
 
-    return response;
+    // Clear OAuth cookies
+    headers.append('Set-Cookie', 'google_oauth_state=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+    headers.append('Set-Cookie', 'google_code_verifier=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
+
+    return new Response(null, {
+      status: 302,
+      headers
+    });
 
   } catch (error) {
-    console.error("Google OAuth callback error:", error);
+    console.error("Google OAuth callback error:", {
+      message: error instanceof Error ? error.message : 'Unknown error',
+      name: error instanceof Error ? error.name : 'Unknown error type'
+    });
+
     return new Response("Authentication failed. Please try again.", {
       status: 500
     });
