@@ -1,4 +1,5 @@
 'use client'
+
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -19,11 +20,11 @@ import {
     AlertDialogDescription,
     AlertDialogFooter,
     AlertDialogCancel,
+    AlertDialogAction,
 } from "@/components/ui/alert-dialog"
 import ChromeIcon from "@/components/icons/chrome"
 import { GithubIcon } from "@/components/icons/github"
 import { FingerprintIcon } from "@/components/icons/fingerprint"
-import { CircleCheckIcon } from "@/components/icons/circle-check"
 import Image from "next/image"
 import { toast } from "sonner"
 
@@ -35,10 +36,35 @@ export function LoginForm({
     const [showMagicLinkDialog, setShowMagicLinkDialog] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
 
-    const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setShowMagicLinkDialog(true)
-        toast.success("Demo: Magic link would be sent here")
+        setIsLoading(true)
+        
+        try {
+            const response = await fetch("/api/auth/magic-link", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ email }),
+            })
+
+            if (!response.ok) {
+                throw new Error("Failed to send magic link")
+            }
+
+            setShowMagicLinkDialog(true)
+            toast.success("Magic link sent to your email!", {
+                position: "top-center",
+            })
+        } catch (error: unknown) {
+            const errorMessage = error instanceof Error ? error.message : "Failed to send magic link. Please try again."
+            toast.error(errorMessage, {
+                position: "top-center",
+            })
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const handleSocialSignIn = async (provider: "github" | "google") => {
@@ -46,8 +72,8 @@ export function LoginForm({
         try {
             if (provider === "google") {
                 window.location.href = "/api/auth/google"
-            } else {
-                toast.success(`Demo: Would sign in with ${provider}`)
+            } else if (provider === "github") {
+                window.location.href = "/api/auth/github"
             }
         } finally {
             setIsLoading(false)
@@ -55,9 +81,9 @@ export function LoginForm({
     }
 
     const resetForm = () => {
-        setEmail("");
-        setShowMagicLinkDialog(false);
-    };
+        setEmail("")
+        setShowMagicLinkDialog(false)
+    }
 
     return (
         <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -79,10 +105,12 @@ export function LoginForm({
                                     placeholder="m@example.com"
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
+                                    disabled={isLoading}
+                                    required
                                 />
                             </div>
-                            <Button type="submit" className="w-full">
-                                Continue with Email
+                            <Button type="submit" className="w-full" disabled={isLoading}>
+                                {isLoading ? "Sending..." : "Continue with Email"}
                             </Button>
                             <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -158,32 +186,63 @@ export function LoginForm({
                     </div>
                 </CardContent>
             </Card>
+
+            <AlertDialog 
+                open={showMagicLinkDialog} 
+                onOpenChange={(open) => {
+                    setShowMagicLinkDialog(open)
+                    if (!open) resetForm()
+                }}
+            >
+                <AlertDialogContent className="flex max-w-md flex-col items-center gap-6 px-6 py-4 text-center sm:gap-8 sm:p-8">
+                    <AlertDialogHeader className="gap-4">
+                        <AlertDialogTitle className="text-2xl font-bold">
+                            Check Your Email
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-3 text-base text-muted-foreground">
+                            <p>
+                                We&apos;ve sent a magic link to{" "}
+                                <span className="font-medium text-foreground">{email}</span>
+                            </p>
+                            <p>
+                                Click the link in the email to sign in to your account. 
+                                The link will expire in 10 minutes.
+                            </p>
+                            <p className="text-sm">
+                                If you don&apos;t see the email, check your spam folder.
+                            </p>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-center">
+                        <AlertDialogCancel 
+                            className="w-full sm:w-32"
+                            onClick={resetForm}
+                        >
+                            Cancel
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            className="w-full sm:w-auto sm:min-w-32"
+                            onClick={() => {
+                                toast.success("New magic link sent!", {
+                                    position: "top-center",
+                                })
+                                const syntheticEvent = Object.create(new Event('submit'), {
+                                    target: { value: document.createElement('form') },
+                                    preventDefault: { value: () => {} }
+                                })
+                                handleEmailSubmit(syntheticEvent as React.FormEvent<HTMLFormElement>)
+                            }}
+                        >
+                            Resend Email
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
             <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
                 By clicking continue, you agree to our <a href="/terms">Terms of Service</a>{" "}
                 and <a href="/privacy-policy">Privacy Policy</a>.
             </div>
-
-            {email && (
-                <AlertDialog open={showMagicLinkDialog} onOpenChange={setShowMagicLinkDialog}>
-                    <AlertDialogContent className="flex flex-col items-center text-center">
-                        <AlertDialogHeader>
-                            <div className="h-12 w-12 text-black">
-                                <CircleCheckIcon />
-                            </div>
-                            <AlertDialogTitle className="text-2xl font-bold">
-                                Login Link Sent !
-                            </AlertDialogTitle>
-                            <AlertDialogDescription className="text-sm text-muted-foreground">
-                                We&apos;ve sent a magic link to {email}. Click the continue button in the email to login. 
-                                If you don&apos;t see the email in your inbox, check your spam folder.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter className="flex flex-col gap-2 sm:flex-row">
-                            <AlertDialogCancel onClick={resetForm}>Try Another Email</AlertDialogCancel>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            )}
         </div>
     )
 }
