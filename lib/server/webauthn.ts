@@ -22,8 +22,8 @@ export async function getUserPasskeyCredentials(
   const rows = await prisma.passkeyCredential.findMany({
     where: {
       user: {
-        email
-      }
+        email,
+      },
     },
   });
 
@@ -61,7 +61,7 @@ export async function getPasskeyCredential(
 }
 
 export async function getUserPasskeyCredential(
-  userId: string,
+  email: string,
   credentialId: Uint8Array
 ): Promise<WebAuthnUserCredential | null> {
   const credentialIdString = Buffer.from(credentialId).toString("base64");
@@ -69,7 +69,9 @@ export async function getUserPasskeyCredential(
   const row = await prisma.passkeyCredential.findFirst({
     where: {
       id: credentialIdString,
-      userId,
+      user: {
+        email,
+      },
     },
   });
 
@@ -99,23 +101,23 @@ export async function createPasskeyCredential(
       algorithm: credential.algorithmId,
       publicKey: publicKey,
     },
-  });  
+  });
 }
 
 export async function deleteUserPasskeyCredential(
   userId: string,
   credentialId: Uint8Array
 ): Promise<boolean> {
-    const credentialIdString = Buffer.from(credentialId).toString("base64");
+  const credentialIdString = Buffer.from(credentialId).toString("base64");
 
-    const result = await prisma.passkeyCredential.deleteMany({
-      where: {
-        id: credentialIdString,
-        userId,
-      },
-    });
-    
-    return result.count > 0;    
+  const result = await prisma.passkeyCredential.deleteMany({
+    where: {
+      id: credentialIdString,
+      userId,
+    },
+  });
+
+  return result.count > 0;
 }
 
 // todo: security code:
@@ -128,7 +130,7 @@ export async function deleteUserPasskeyCredential(
 //           userId: userId, // Replace with the variable containing the user ID
 //         },
 //       });
-      
+
 //       return rows.map((row) => ({
 //         id: new Uint8Array(Buffer.from(row.id, "base64")),
 //         userId: row.userId,
@@ -136,7 +138,7 @@ export async function deleteUserPasskeyCredential(
 //         algorithmId: row.algorithm,
 //         publicKey: new Uint8Array(Buffer.from(row.publicKey, "base64")),
 //         createdAt: row.createdAt,
-//       }));      
+//       }));
 // }
 
 // export async function getUserSecurityKeyCredential(
