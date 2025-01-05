@@ -17,11 +17,13 @@ export function verifyWebAuthnChallenge(challenge: Uint8Array): boolean {
 }
 
 export async function getUserPasskeyCredentials(
-  userId: string
+  email: string
 ): Promise<WebAuthnUserCredential[]> {
   const rows = await prisma.passkeyCredential.findMany({
     where: {
-      userId,
+      user: {
+        email
+      }
     },
   });
 
