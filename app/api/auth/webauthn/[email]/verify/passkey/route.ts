@@ -28,10 +28,9 @@ import {
   verifyRSASSAPKCS1v15Signature,
 } from "@oslojs/crypto/rsa";
 
-export async function POST(
-  req: Request,
-  { params }: { params: { email: string } }
-) {
+type Params = Promise<{ email: string }>;
+
+export async function POST(req: Request, { params }: { params: Params }) {
   try {
     const body: {
       credential_id: string;

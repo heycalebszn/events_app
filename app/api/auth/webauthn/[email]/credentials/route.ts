@@ -1,11 +1,9 @@
 import { verifyEmailInput } from "@/lib/email";
 import { getUserPasskeyCredentials } from "@/lib/server/webauthn";
 import { NextResponse } from "next/server";
+type Params = Promise<{ email: string }>;
 
-export async function GET(
-  req: Request,
-  { params }: { params: { email: string } }
-) {
+export async function GET(req: Request, { params }: { params: Params }) {
   try {
     const { email } = await params;
 
