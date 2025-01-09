@@ -11,12 +11,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { TicketIcon } from "@/components/icons/ticket"
+import { TagIcon } from "@/components/icons/ticket"
 import { UsersIcon } from "@/components/icons/users"
 import { PartyPopperIcon } from "@/components/icons/callendar"
 import { SettingsIcon } from "@/components/icons/settings"
 import { CircleHelpIcon } from "@/components/icons/circle-help"
-import { BarChart3Icon } from "@/components/icons/bar-chart"
+import { ChartColumnIncreasingIcon } from "@/components/icons/bar-chart"
 import { LayoutPanelTopIcon } from "@/components/icons/dashboardIcon"
 import { LucideIcon } from "lucide-react"
 
@@ -54,7 +54,7 @@ const data = {
     },
     {
       name: "City Tickets",
-      logo: TicketIcon,
+      logo: TagIcon,
       plan: "Startup",
     },
   ] as Team[],
@@ -87,7 +87,7 @@ const data = {
     {
       title: "Ticketing",
       url: "/ticketing",
-      icon: TicketIcon,
+      icon: TagIcon,
       items: [
         {
           title: "Sell Tickets",
@@ -121,7 +121,7 @@ const data = {
     {
       title: "Analytics",
       url: "/analytics",
-      icon: BarChart3Icon,
+      icon: ChartColumnIncreasingIcon,
       items: [
         {
           title: "Sales Report",
