@@ -63,3 +63,4 @@ const ChromeIcon = () => {
 };
 
 export default ChromeIcon;
+
