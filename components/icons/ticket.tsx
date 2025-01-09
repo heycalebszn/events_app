@@ -1,89 +1,105 @@
-'use client'
 
-import { useAnimation, motion } from 'motion/react'
-import { Ticket } from 'lucide-react'
+'use client';
 
-const TicketIcon = () => {
-  const controls = useAnimation()
+import { motion, useAnimation } from 'motion/react';
+import type { Variants } from 'motion/react';
+
+const rectVariants: Variants = {
+  normal: {
+    opacity: 1,
+    pathLength: 1,
+    pathOffset: 0,
+    transition: {
+      duration: 0.4,
+      opacity: { duration: 0.1 },
+    },
+  },
+  animate: {
+    opacity: [0, 1],
+    pathLength: [0, 1],
+    pathOffset: [1, 0],
+    transition: {
+      duration: 0.6,
+      ease: 'linear',
+      opacity: { duration: 0.1 },
+    },
+  },
+};
+
+const lineVariants: Variants = {
+  normal: {
+    opacity: 1,
+    pathLength: 1,
+    pathOffset: 0,
+    transition: {
+      duration: 0.4,
+      opacity: { duration: 0.1 },
+    },
+  },
+  animate: {
+    opacity: [0, 1],
+    pathLength: [0, 1],
+    pathOffset: [1, 0],
+    transition: {
+      duration: 0.6,
+      ease: 'linear',
+      opacity: { duration: 0.1 },
+    },
+  },
+};
+
+const TagIcon = () => {
+  const rectControls = useAnimation();
+  const pathControls = useAnimation();
+  const lineControls = useAnimation();
+
+  const handleMouseEnter = () => {
+    rectControls.start('animate');
+    pathControls.start('animate');
+    lineControls.start('animate');
+  };
+
+  const handleMouseLeave = () => {
+    rectControls.start('normal');
+    pathControls.start('normal');
+    lineControls.start('normal');
+  };
 
   return (
     <div
       className="cursor-pointer select-none p-2 hover:bg-accent rounded-md transition-colors duration-200 flex items-center justify-center"
-      onMouseEnter={() => controls.start('animate')}
-      onMouseLeave={() => controls.start('normal')}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <motion.div
-        initial="normal"
-        animate={controls}
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="18"
+        height="18"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       >
-        <Ticket size={18} strokeWidth={2}>
-          <motion.rect
-            width="18"
-            height="7"
-            x="3"
-            y="3"
-            rx="1"
-            initial="normal"
-            animate={controls}
-            variants={{
-              normal: { opacity: 1, translateY: 0 },
-              animate: {
-                opacity: [0, 1],
-                translateY: [-5, 0],
-                transition: {
-                  opacity: { duration: 0.5, times: [0.2, 1] },
-                  duration: 0.5,
-                },
-              },
-            }}
-          />
-          <motion.rect
-            width="7"
-            height="7"
-            x="3"
-            y="14"
-            rx="1"
-            initial="normal"
-            animate={controls}
-            variants={{
-              normal: { opacity: 1, translateX: 0 },
-              animate: {
-                opacity: [0, 1],
-                translateX: [-10, 0],
-                transition: {
-                  opacity: { duration: 0.7, times: [0.5, 1] },
-                  translateX: { delay: 0.3 },
-                  duration: 0.5,
-                },
-              },
-            }}
-          />
-          <motion.rect
-            width="7"
-            height="7"
-            x="14"
-            y="14"
-            rx="1"
-            initial="normal"
-            animate={controls}
-            variants={{
-              normal: { opacity: 1, translateX: 0 },
-              animate: {
-                opacity: [0, 1],
-                translateX: [10, 0],
-                transition: {
-                  opacity: { duration: 0.8, times: [0.5, 1] },
-                  translateX: { delay: 0.4 },
-                  duration: 0.5,
-                },
-              },
-            }}
-          />
-        </Ticket>
-      </motion.div>
+        <motion.path
+          variants={rectVariants}
+          initial="normal"
+          animate={rectControls}
+          d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"
+        />
+        <motion.line
+          variants={lineVariants}
+          initial="normal"
+          animate={lineControls}
+          x1="7"
+          y1="7"
+          x2="7.01"
+          y2="7"
+        />
+      </svg>
     </div>
-  )
-}
+  );
+};
 
-export { TicketIcon }
-
+export { TagIcon };

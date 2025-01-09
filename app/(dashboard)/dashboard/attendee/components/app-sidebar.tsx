@@ -75,46 +75,39 @@ const data = {
           url: "/events",
         },
         {
-          title: "Create Event",
-          url: "/events/create",
-        },
-        {
           title: "Categories",
           url: "/events/categories",
         },
       ],
     },
     {
-      title: "Ticketing",
+      title: "Tickets",
       url: "/ticketing",
       icon: TagIcon,
       items: [
         {
-          title: "Sell Tickets",
-          url: "/ticketing/sell",
+          title: "View Tickets",
+          url: "#",
         },
         {
-          title: "Manage Orders",
-          url: "/ticketing/orders",
+          title: "Transfer Tickets",
+          url: "#",
         },
-        {
-          title: "Pricing",
-          url: "/ticketing/pricing",
-        },
+     
       ],
     },
     {
-      title: "Attendees",
-      url: "/attendees",
+      title: "Connections",
+      url: "#",
       icon: UsersIcon,
       items: [
         {
-          title: "Attendee List",
-          url: "/attendees/list",
+          title: "Connected List",
+          url: "#",
         },
         {
-          title: "Check-in",
-          url: "/attendees/check-in",
+          title: "Close Connection",
+          url: "#",
         },
       ],
     },
@@ -124,11 +117,11 @@ const data = {
       icon: ChartColumnIncreasingIcon,
       items: [
         {
-          title: "Sales Report",
-          url: "/analytics/sales",
+          title: "Purchase Report",
+          url: "#",
         },
         {
-          title: "Attendance",
+          title: "Events Attended",
           url: "/analytics/attendance",
         },
       ],
