@@ -1,56 +1,52 @@
-import { getCurrentSession } from "@/lib/server/session";
-import { redirect } from "next/navigation";
-import { globalGETRateLimit } from "@/lib/server/request";
-import { Profile, OauthAccount } from "@prisma/client";
-import { ProfileContent } from "@/components/profile";
+import { AppSidebar } from "@/components/app-sidebar"
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb"
+import { Separator } from "@/components/ui/separator"
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 
-type UserWithRelations = {
-  id: string;
-  email: string | null;
-  password: string | null;
-  emailVerified: boolean;
-  verificationCode: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  profile: Profile | null;
-  oauthAccount: OauthAccount | null;
-}
-
-type SessionResult = {
-  user: UserWithRelations | null;
-}
-
-export default async function Page() {
-  if (!globalGETRateLimit()) {
-    return "Too many requests";
-  }
-
-  const session = await getCurrentSession() as SessionResult;
-  if (!session.user) {
-    return redirect("/");
-  }
-
-  const profilePicture = session.user.profile?.imageUrl || session.user.oauthAccount?.userAvatarURL || null;
-
-  // Extract first name from email
-  const firstName = session.user.email
-    ? session.user.email.split('@')[0].charAt(0).toUpperCase() +
-    session.user.email.split('@')[0].slice(1)
-    : "John";
-
-  const lastName = "Doe";
-
+export default function Page() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-md w-full space-y-6 p-8 bg-white rounded-lg shadow-lg">
-        <ProfileContent
-          profilePicture={profilePicture}
-          firstName={firstName}
-          lastName={lastName}
-          email={session.user.email}
-        />
-      </div>
-    </div>
-  );
+    <SidebarProvider>
+      <AppSidebar />
+      <SidebarInset>
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
+          <div className="flex items-center gap-2 px-4">
+            <SidebarTrigger className="-ml-1" />
+            <Separator orientation="vertical" className="mr-2 h-4" />
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem className="hidden md:block">
+                  <BreadcrumbLink href="#">
+                    Building Your Application
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator className="hidden md:block" />
+                <BreadcrumbItem>
+                  <BreadcrumbPage>Data Fetching</BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
+          </div>
+        </header>
+        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
+          <div className="grid auto-rows-min gap-4 md:grid-cols-3">
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+            <div className="aspect-video rounded-xl bg-muted/50" />
+          </div>
+          <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        </div>
+      </SidebarInset>
+    </SidebarProvider>
+  )
 }
-
