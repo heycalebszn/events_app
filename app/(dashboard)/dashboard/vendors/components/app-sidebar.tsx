@@ -44,7 +44,7 @@ const vendorData = {
   user: {
     name: "Food Vendor",
     email: "vendor@example.com",
-    avatar: "/avatars/vendor.jpg",
+    avatar: "/avatars/vendor.svg",
   },
   teams: [
     {

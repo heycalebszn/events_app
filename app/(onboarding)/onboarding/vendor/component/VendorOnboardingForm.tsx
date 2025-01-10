@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, ChangeEvent } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import { ArrowRight, Upload, X } from 'lucide-react'
 import { Button } from "@/components/ui/button"
@@ -16,12 +17,10 @@ import {
 } from "@/components/ui/select"
 
 export default function VendorOnboardingForm() {
+  const router = useRouter()
   const [vendorType, setVendorType] = useState('')
   const [logo, setLogo] = useState<File | null>(null)
   const [logoPreview, setLogoPreview] = useState<string | null>(null)
-
-  // Display selected vendor type
-  console.log('Selected vendor type:', vendorType)
 
   const handleLogoChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -40,8 +39,16 @@ export default function VendorOnboardingForm() {
     setLogoPreview(null)
   }
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Here you would typically send the form data to your backend
+    console.log('Form submitted', { vendorType })
+    // Redirect to payment setup page
+    router.push('/payment-setup')
+  }
+
   return (
-    <form className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="businessName">Business Name</Label>
         <Input id="businessName" placeholder="Your food business name" required />
@@ -50,7 +57,7 @@ export default function VendorOnboardingForm() {
       <div className="space-y-2">
         <Label htmlFor="vendorType">Vendor Type</Label>
         <Select onValueChange={setVendorType} required>
-          <SelectTrigger>
+          <SelectTrigger id="vendorType">
             <SelectValue placeholder="Select vendor type" />
           </SelectTrigger>
           <SelectContent>
