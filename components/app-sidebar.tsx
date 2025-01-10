@@ -18,6 +18,9 @@ import { SettingsIcon } from "@/components/icons/settings"
 import { CircleHelpIcon } from "@/components/icons/circle-help"
 import { ChartColumnIncreasingIcon } from "@/components/icons/bar-chart"
 import { LayoutPanelTopIcon } from "@/components/icons/dashboardIcon"
+import  KeynoteSpeakerIcon  from "@/components/icons/keynote-speaker"
+import  {StoreIcon}   from "@/components/icons/store"
+
 import { LucideIcon } from "lucide-react"
 
 // Updated interface to include React.FC as a valid icon type
@@ -115,6 +118,32 @@ const data = {
         {
           title: "Check-in",
           url: "/attendees/check-in",
+        },
+      ],
+    },
+    {
+      title: "Keynote Speaker",
+      url: "#",
+      icon: KeynoteSpeakerIcon,
+      items: [
+        {
+          title: "Invite Speaker",
+          url: "#",
+        },
+        {
+          title: "Speaker Lists",
+          url: "#",
+        },
+      ],
+    },
+    {
+      title: "Vendor",
+      url: "#",
+      icon: StoreIcon ,
+      items: [
+        {
+          title: "View Vendors",
+          url: "#",
         },
       ],
     },
