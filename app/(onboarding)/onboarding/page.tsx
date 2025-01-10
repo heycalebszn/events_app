@@ -12,7 +12,7 @@ export default function OnboardingPage() {
             <div className="w-full max-w-sm space-y-6 md:max-w-3xl">
                 <div className="text-center space-y-2">
                     <h1 className="text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">
-                        Welcome to Events Palour
+                    Event Organizer Onboarding
                     </h1>
                     <p className="text-muted-foreground text-sm md:text-base">
                         Let&apos;s set up your organization and get you started
