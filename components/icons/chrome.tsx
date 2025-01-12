@@ -70,6 +70,5 @@ const ChromeIcon = () => {
     </div>
   );
 };
-
-export { ChromeIcon };
+export default ChromeIcon;
 
