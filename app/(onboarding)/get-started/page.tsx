@@ -125,7 +125,6 @@ export default function GetStartedPage() {
             onClick={() => handleRoleSelection('organizer')}
             buttonText="Start as Organizer"
           />
-          
           <RoleCard 
             title="Vendor" 
             description="Join our event vendor network to start offering your services for exciting events and create unforgettable experiences."
