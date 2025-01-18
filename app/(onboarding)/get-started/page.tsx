@@ -1,5 +1,4 @@
 'use client'
-
 import { useRouter } from 'next/navigation'
 import { ArrowRight, Calendar, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
