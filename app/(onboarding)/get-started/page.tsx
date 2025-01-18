@@ -110,7 +110,7 @@ export default function GetStartedPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          Select your role to unlock a world of exciting events, opportunities, and culinary experiences.
+       Select your role to unlock a world of exciting events, business opportunities, and marketplace experiences
         </motion.p>
         
         <motion.div 
