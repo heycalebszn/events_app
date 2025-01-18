@@ -132,7 +132,6 @@ export default function GetStartedPage() {
             onClick={() => handleRoleSelection('vendor')}
             buttonText="Join as Vendor"
           />
-          
           <RoleCard 
             title="Event Attendee" 
             description="Discover exciting events, savor delicious food, and create lasting memories with like-minded people."
