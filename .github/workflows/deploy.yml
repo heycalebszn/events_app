@@ -60,6 +60,13 @@ jobs:
             fi
             cd /projects/events-palour
             git pull origin main  # Pull the latest changes
+
+            # Copy the .env file to the VPS (from repo root to app directory)
+            cp /path/to/your/repo/.env /projects/events-palour/.env
+
+            # Install dependencies
             pnpm install  # Install dependencies
             pnpm build  # Build the app
+
+            # Restart the app with PM2
             pm2 restart my-next-app  # Restart the app with PM2
