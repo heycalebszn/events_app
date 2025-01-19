@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button"
 import { useAuthStore } from '@/store/auth'
 import type { UserRole } from '@/types/auth'
 import { MarketplaceIcon } from '@/components/icons/Marketplace'
-
 // Define motion variants
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
