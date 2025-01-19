@@ -47,26 +47,26 @@ jobs:
         run: pnpm build
 
       # Step 7: Deploy to VPS
-- name: Deploy to VPS
-  uses: appleboy/ssh-action@master
-  with:
-    host: ${{ secrets.HOST }}
-    username: ${{ secrets.USERNAME }}
-    key: ${{ secrets.SSH_PRIVATE_KEY }}
-    script: |
-      # Navigate to the /projects directory and clone the repository if not already done
-      if [ ! -d "/projects/events-palour" ]; then
-        git clone https://github.com/events-palour/events_app.git /projects/events-palour
-      fi
-      cd /projects/events-palour
-      git pull origin main  # Pull the latest changes
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the /projects directory and clone the repository if not already done
+            if [ ! -d "/projects/events-palour" ]; then
+              git clone https://github.com/events-palour/events_app.git /projects/events-palour
+            fi
+            cd /projects/events-palour
+            git pull origin main  # Pull the latest changes
 
-      # Copy the .env file to the VPS (from repo root to app directory)
-      cp /path/to/your/repo/.env /projects/events-palour/.env
+            # Copy the .env file to the VPS (from repo root to app directory)
+            cp /home/runner/work/events_app/events_app/.env /projects/events-palour/.env
 
-      # Install dependencies
-      pnpm install  # Install dependencies
-      pnpm build  # Build the app
+            # Install dependencies
+            pnpm install  # Install dependencies
+            pnpm build  # Build the app
 
-      # Restart the app with PM2
-      pm2 restart my-next-app  # Restart the app with PM2
+            # Restart the app with PM2
+            pm2 restart my-next-app  # Restart the app with PM2
