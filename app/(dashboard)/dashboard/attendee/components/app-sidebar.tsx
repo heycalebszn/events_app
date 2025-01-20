@@ -12,7 +12,6 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { TagIcon } from "@/components/icons/ticket"
-import { UsersIcon } from "@/components/icons/users"
 import { PartyPopperIcon } from "@/components/icons/callendar"
 import { SettingsIcon } from "@/components/icons/settings"
 import { CircleHelpIcon } from "@/components/icons/circle-help"
@@ -96,21 +95,21 @@ const data = {
      
       ],
     },
-    {
-      title: "Connections",
-      url: "#",
-      icon: UsersIcon,
-      items: [
-        {
-          title: "Connected List",
-          url: "#",
-        },
-        {
-          title: "Close Connection",
-          url: "#",
-        },
-      ],
-    },
+    // {
+    //   title: "Connections",
+    //   url: "#",
+    //   icon: UsersIcon,
+    //   items: [
+    //     {
+    //       title: "Connected List",
+    //       url: "#",
+    //     },
+    //     {
+    //       title: "Close Connection",
+    //       url: "#",
+    //     },
+    //   ],
+    // },
     {
       title: "Analytics",
       url: "/analytics",

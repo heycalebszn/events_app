@@ -1,72 +1,72 @@
-name: Deploy Next.js with PNPM
+# name: Deploy Next.js with PNPM
 
-on:
-  push:
-    branches: [ main ]  # Adjust if your default branch is different
+# on:
+#   push:
+#     branches: [ main ]  # Adjust if your default branch is different
 
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
 
-    steps:
-      # Step 1: Checkout the repository
-      - uses: actions/checkout@v4
+#     steps:
+#       # Step 1: Checkout the repository
+#       - uses: actions/checkout@v4
 
-      # Step 2: Set up Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
+#       # Step 2: Set up Node.js
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v4
+#         with:
+#           node-version: '20'
 
-      # Step 3: Install pnpm
-      - name: Install pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+#       # Step 3: Install pnpm
+#       - name: Install pnpm
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: 8
 
-      # Step 4: Set up pnpm cache
-      - name: Get pnpm store directory
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+#       # Step 4: Set up pnpm cache
+#       - name: Get pnpm store directory
+#         shell: bash
+#         run: |
+#           echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
 
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ env.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+#       - uses: actions/cache@v3
+#         name: Setup pnpm cache
+#         with:
+#           path: ${{ env.STORE_PATH }}
+#           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pnpm-store-
 
-      # Step 5: Install dependencies
-      - name: Install Dependencies
-        run: pnpm install
+#       # Step 5: Install dependencies
+#       - name: Install Dependencies
+#         run: pnpm install
 
-      # Step 6: Build the application
-      - name: Build
-        run: pnpm build
+#       # Step 6: Build the application
+#       - name: Build
+#         run: pnpm build
 
-      # Step 7: Deploy to VPS
-      - name: Deploy to VPS
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Navigate to the /projects directory and clone the repository if not already done
-            if [ ! -d "/projects/events-palour" ]; then
-              git clone https://github.com/events-palour/events_app.git /projects/events-palour
-            fi
-            cd /projects/events-palour
-            git pull origin main  # Pull the latest changes
+#       # Step 7: Deploy to VPS
+#       - name: Deploy to VPS
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.HOST }}
+#           username: ${{ secrets.USERNAME }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           script: |
+#             # Navigate to the /projects directory and clone the repository if not already done
+#             if [ ! -d "/projects/events-palour" ]; then
+#               git clone https://github.com/events-palour/events_app.git /projects/events-palour
+#             fi
+#             cd /projects/events-palour
+#             git pull origin main  # Pull the latest changes
 
-            # Copy the .env file to the VPS (from repo root to app directory)
-            cp /home/runner/work/events_app/events_app/.env /projects/events-palour/.env
+#             # Copy the .env file to the VPS (from repo root to app directory)
+#             cp /home/runner/work/events_app/events_app/.env /projects/events-palour/.env
 
-            # Install dependencies
-            pnpm install  # Install dependencies
-            pnpm build  # Build the app
+#             # Install dependencies
+#             pnpm install  # Install dependencies
+#             pnpm build  # Build the app
 
-            # Restart the app with PM2
-            pm2 restart my-next-app  # Restart the app with PM2
+#             # Restart the app with PM2
+#             pm2 restart my-next-app  # Restart the app with PM2
