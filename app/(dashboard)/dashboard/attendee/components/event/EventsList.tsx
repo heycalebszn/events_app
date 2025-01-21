@@ -6,6 +6,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Input } from "@/components/ui/input"
 import { MapPin, Calendar, Search, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 const filters = [
   "All",
@@ -188,11 +189,13 @@ export default function EventsList() {
         {currentEvents.map((event) => (
           <Card key={event.id}>
             <CardHeader>
-              <img
-                src={event.image || "/placeholder.svg"}
-                alt={event.title}
-                className="w-full h-48 object-cover rounded-t-lg"
-              />
+            <Image
+        src={event.image || "/placeholder.svg"}
+        alt={event.title}
+        width={400}
+        height={200}
+        className="w-full h-48 object-cover rounded-t-lg"
+      />
             </CardHeader>
             <CardContent>
               <CardTitle>{event.title}</CardTitle>
