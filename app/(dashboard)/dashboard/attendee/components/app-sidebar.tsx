@@ -60,37 +60,43 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard/attendee",
+      url: "#",
       icon: LayoutPanelTopIcon,
-      isActive: true,
+      items: [
+        {
+          title: "Overview",
+          url: "/dashboard/attendee",
+        },
+       
+      ],
     },
     {
       title: "Events",
-      url: "/events",
+      url: "#",
       icon: PartyPopperIcon,
       items: [
         {
           title: "All Events",
-          url: "/events",
+          url: "/dashboard/attendee/events",
         },
         {
           title: "Categories",
-          url: "/events/categories",
+          url: "#",
         },
       ],
     },
     {
       title: "Tickets",
-      url: "/ticketing",
+      url: "#",
       icon: TagIcon,
       items: [
         {
           title: "View Tickets",
-          url: "#",
+          url: "/dashboard/attendee/tickets",
         },
         {
           title: "Transfer Tickets",
-          url: "#",
+          url: "/dashboard/attendee/tickets-transfer",
         },
      
       ],
@@ -112,46 +118,40 @@ const data = {
     // },
     {
       title: "Analytics",
-      url: "/analytics",
+      url: "#",
       icon: ChartColumnIncreasingIcon,
       items: [
         {
           title: "Purchase Report",
-          url: "#",
+          url: "/dashboard/attendee/analytics-purchases",
         },
         {
           title: "Events Attended",
-          url: "/analytics/attendance",
+          url: "/dashboard/attendee/analytics-events",
         },
       ],
     },
     {
       title: "Settings",
-      url: "/settings",
+      url: "#",
       icon: SettingsIcon,
       items: [
         {
           title: "General",
-          url: "/settings/general",
-        },
-        {
-          title: "Team",
-          url: "/settings/team",
-        },
-        {
-          title: "Billing",
-          url: "/settings/billing",
-        },
-        {
-          title: "Integrations",
-          url: "/settings/integrations",
+          url: "/dashboard/attendee/settings",
         },
       ],
     },
     {
       title: "Help & Support",
-      url: "/support",
+      url: "#",
       icon: CircleHelpIcon,
+      items: [
+        {
+          title: "Help/Faq",
+          url: "/dashboard/attendee/support",
+        },
+      ],
     },
   ] as NavItemType[],
 }
