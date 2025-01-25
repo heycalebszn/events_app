@@ -5,6 +5,7 @@ export const metadata: Metadata = {
   title: "Explore Events | Events Parlour",
   description: "Explore events and attend with ease",
 }
+
 export default function EventsPage({ 
   searchParams 
 }: { 
@@ -12,8 +13,8 @@ export default function EventsPage({
 }) {
   return (
     <EventsList 
-      initialView={searchParams.view || "list"} 
-      initialCategory={searchParams.category || "All"} 
+      initialView={searchParams.view ?? "list"} 
+      initialCategory={searchParams.category ?? "All"} 
     />
   )
 }

@@ -61,10 +61,6 @@ const data = {
           title: "All Events",
           url: "/dashboard/attendee/events",
         },
-        {
-          title: "Categories",
-          url: "#",
-        },
       ],
     },
     {
