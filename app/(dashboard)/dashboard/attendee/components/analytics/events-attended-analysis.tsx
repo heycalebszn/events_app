@@ -22,11 +22,11 @@ const recentEvents = [
 
 export default function EventsAttendedAnalysis() {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Events Attended Analysis</h1>
+    <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Events Attended Analysis</h1>
 
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card>
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Event Categories</CardTitle>
             <CardDescription>Distribution of events you&apos;ve attended by category</CardDescription>
@@ -39,7 +39,7 @@ export default function EventsAttendedAnalysis() {
                   color: "hsl(var(--chart-1))",
                 },
               }}
-              className="h-[300px]"
+              className="h-[250px] sm:h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -48,7 +48,7 @@ export default function EventsAttendedAnalysis() {
                     cx="50%"
                     cy="50%"
                     labelLine={false}
-                    outerRadius={80}
+                    outerRadius="80%"
                     fill="#8884d8"
                     dataKey="value"
                     label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
@@ -65,7 +65,7 @@ export default function EventsAttendedAnalysis() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Recent Events Attended</CardTitle>
             <CardDescription>Your most recently attended events</CardDescription>
@@ -73,12 +73,12 @@ export default function EventsAttendedAnalysis() {
           <CardContent>
             <div className="space-y-4">
               {recentEvents.map((event) => (
-                <div key={event.id} className="flex justify-between items-center border-b pb-2">
-                  <div>
-                    <h3 className="font-medium">{event.name}</h3>
-                    <p className="text-sm text-muted-foreground">{event.date}</p>
+                <div key={event.id} className="flex justify-between items-center border-b pb-2 last:border-b-0">
+                  <div className="flex-grow pr-4">
+                    <h3 className="font-medium text-sm sm:text-base">{event.name}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{event.date}</p>
                   </div>
-                  <span className="text-sm font-medium bg-primary/10 text-primary px-2 py-1 rounded">
+                  <span className="text-xs sm:text-sm font-medium bg-primary/10 text-primary px-2 py-1 rounded">
                     {event.category}
                   </span>
                 </div>
@@ -88,24 +88,24 @@ export default function EventsAttendedAnalysis() {
         </Card>
       </div>
 
-      <Card className="mt-8">
+      <Card className="mt-6 lg:mt-8">
         <CardHeader>
           <CardTitle>Attendance Statistics</CardTitle>
           <CardDescription>Overview of your event attendance</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Total Events Attended</h3>
-              <p className="text-2xl font-bold">28</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Total Events Attended</h3>
+              <p className="text-xl sm:text-2xl font-bold">28</p>
             </div>
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Most Attended Category</h3>
-              <p className="text-2xl font-bold">Music</p>
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Most Attended Category</h3>
+              <p className="text-xl sm:text-2xl font-bold">Music</p>
             </div>
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Attendance Streak</h3>
-              <p className="text-2xl font-bold">5 weeks</p>
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Attendance Streak</h3>
+              <p className="text-xl sm:text-2xl font-bold">5 weeks</p>
             </div>
           </div>
         </CardContent>
@@ -113,4 +113,3 @@ export default function EventsAttendedAnalysis() {
     </div>
   )
 }
-
