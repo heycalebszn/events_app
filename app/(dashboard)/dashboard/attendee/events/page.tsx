@@ -9,12 +9,15 @@ export const metadata: Metadata = {
 export default function EventsPage({ 
   searchParams 
 }: { 
-  searchParams: { view?: string; category?: string } 
+  searchParams: { 
+    view?: string; 
+    category?: string 
+  } 
 }) {
   return (
     <EventsList 
-      initialView={(searchParams.view as string) ?? "list"} 
-      initialCategory={(searchParams.category as string) ?? "All"} 
+      initialView={searchParams.view ?? "list"} 
+      initialCategory={searchParams.category ?? "All"} 
     />
   )
 }
