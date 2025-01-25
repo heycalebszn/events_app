@@ -23,7 +23,7 @@ const recentEvents = [
 export default function EventsAttendedAnalysis() {
   return (
     <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
-      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Events Attended Analysis</h1>
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 ">Events Attended Analysis</h1>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
         <Card className="w-full">
