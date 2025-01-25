@@ -6,18 +6,16 @@ export const metadata: Metadata = {
   description: "Explore events and attend with ease",
 }
 
-export default function EventsPage({ 
-  searchParams 
-}: { 
-  searchParams: { 
-    view?: string; 
-    category?: string 
-  } 
-}) {
-  return (
-    <EventsList 
-      initialView={searchParams.view ?? "list"} 
-      initialCategory={searchParams.category ?? "All"} 
-    />
-  )
+interface SearchParams {
+  view?: string
+  category?: string
 }
+
+export default function EventsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams
+}) {
+  return <EventsList initialView={searchParams.view ?? "list"} initialCategory={searchParams.category ?? "All"} />
+}
+

@@ -83,13 +83,12 @@ const categories = [
   { id: 7, name: "Networking", image: "/images/networking.svg?height=200&width=400", count: 18 },
   { id: 8, name: "Workshops", image: "/images/workshop.svg?height=200&width=400", count: 14 },
 ]
-
 interface EventsListProps {
-  initialView?: string
-  initialCategory?: string
+  initialView: string
+  initialCategory: string
 }
 
-export default function EventsList({ initialView = "list", initialCategory = "All" }: EventsListProps) {
+export default function EventsList({ initialView, initialCategory }: EventsListProps) {
   const router = useRouter()
   const [view, setView] = useState(initialView)
   const [selectedFilter, setSelectedFilter] = useState(initialCategory)
