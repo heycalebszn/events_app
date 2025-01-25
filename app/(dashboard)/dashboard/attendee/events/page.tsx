@@ -19,3 +19,10 @@ export default function EventsPage({
   return <EventsList initialView={searchParams.view ?? "list"} initialCategory={searchParams.category ?? "All"} />
 }
 
+// Add this type declaration at the end of the file
+declare module "next" {
+  interface PageProps {
+    searchParams?: SearchParams
+  }
+}
+
