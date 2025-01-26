@@ -3,7 +3,6 @@
 import * as React from "react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -32,11 +31,6 @@ interface NavItemType {
 }
 
 // Define a Team type that matches the TeamSwitcher expectations
-interface Team {
-  name: string
-  logo: React.ElementType
-  plan: string
-}
 
 const data = {
   user: {
@@ -45,18 +39,6 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   // Remove the 'as const' to make it mutable
-  teams: [
-    {
-      name: "Acme Events",
-      logo: PartyPopperIcon,
-      plan: "Enterprise",
-    },
-    {
-      name: "City Tickets",
-      logo: TagIcon,
-      plan: "Startup",
-    },
-  ] as Team[],
   navMain: [
     {
       title: "Dashboard",
@@ -78,10 +60,6 @@ const data = {
         {
           title: "All Events",
           url: "/dashboard/attendee/events",
-        },
-        {
-          title: "Categories",
-          url: "#",
         },
       ],
     },
@@ -160,12 +138,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" className="bg-white text-black" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+      <div className="p-4 group-data-[collapsible=icon]:hidden">
+          <h2 className="text-md font-semibold">Attendee Dashboard</h2>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter >
         <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

@@ -1,5 +1,4 @@
 "use client"
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend } from "recharts"
@@ -21,11 +20,11 @@ const recentPurchases = [
 
 export default function PurchaseReport() {
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8">Purchase Report</h1>
-
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card>
+    <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 ">Purchase Report</h1>
+      
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Spending Overview</CardTitle>
             <CardDescription>Your ticket purchase history over the last 6 months</CardDescription>
@@ -38,7 +37,7 @@ export default function PurchaseReport() {
                   color: "hsl(var(--chart-1))",
                 },
               }}
-              className="h-[300px]"
+              className="h-[250px] sm:h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={purchaseData}>
@@ -54,7 +53,7 @@ export default function PurchaseReport() {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="w-full">
           <CardHeader>
             <CardTitle>Recent Purchases</CardTitle>
             <CardDescription>Your most recent ticket purchases</CardDescription>
@@ -62,12 +61,12 @@ export default function PurchaseReport() {
           <CardContent>
             <div className="space-y-4">
               {recentPurchases.map((purchase) => (
-                <div key={purchase.id} className="flex justify-between items-center border-b pb-2">
-                  <div>
-                    <h3 className="font-medium">{purchase.event}</h3>
-                    <p className="text-sm text-muted-foreground">{purchase.date}</p>
+                <div key={purchase.id} className="flex justify-between items-center border-b pb-2 last:border-b-0">
+                  <div className="flex-grow pr-4">
+                    <h3 className="font-medium text-sm sm:text-base">{purchase.event}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{purchase.date}</p>
                   </div>
-                  <span className="font-bold">${purchase.amount}</span>
+                  <span className="font-bold text-sm sm:text-base">${purchase.amount}</span>
                 </div>
               ))}
             </div>
@@ -75,24 +74,24 @@ export default function PurchaseReport() {
         </Card>
       </div>
 
-      <Card className="mt-8">
+      <Card className="mt-6 lg:mt-8">
         <CardHeader>
           <CardTitle>Purchase Statistics</CardTitle>
           <CardDescription>Overview of your ticket purchasing behavior</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-4 md:grid-cols-3">
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Total Spent</h3>
-              <p className="text-2xl font-bold">$3,300</p>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Total Spent</h3>
+              <p className="text-xl sm:text-2xl font-bold">$3,300</p>
             </div>
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Tickets Purchased</h3>
-              <p className="text-2xl font-bold">15</p>
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Tickets Purchased</h3>
+              <p className="text-xl sm:text-2xl font-bold">15</p>
             </div>
-            <div className="bg-primary/10 p-4 rounded-lg">
-              <h3 className="font-medium text-primary">Average Price</h3>
-              <p className="text-2xl font-bold">$220</p>
+            <div className="bg-primary/10 p-4 rounded-lg text-center">
+              <h3 className="font-medium text-primary text-sm sm:text-base">Average Price</h3>
+              <p className="text-xl sm:text-2xl font-bold">$220</p>
             </div>
           </div>
         </CardContent>
@@ -100,4 +99,3 @@ export default function PurchaseReport() {
     </div>
   )
 }
-
