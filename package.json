@@ -47,6 +47,7 @@
     "@radix-ui/react-tooltip": "^1.1.6",
     "@react-email/components": "^0.0.31",
     "@react-email/render": "^1.0.3",
+    "@tanstack/react-table": "^8.20.6",
     "@types/nodemailer": "^6.4.17",
     "@types/pg": "^8.11.10",
     "arctic": "^2.3.3",

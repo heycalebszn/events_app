@@ -14,12 +14,11 @@ import type { DateRange } from "react-day-picker"
 const filters = [
   "All",
   "Online",
-  "Physical",
   "Festivals",
   "Conference",
   "Tech",
   "Outdoor",
-  "Ventures",
+  // "Ventures",
   "Networking",
   "Workshops",
 ]
@@ -36,8 +35,8 @@ const events = [
   {
     id: 2,
     title: "Tech Startup Expo",
-    date: "2024-02-15",
-    location: "Online",
+    date: "2024-01-27",
+    location: "Online, Google Meet",
     type: "Tech",
     image: "/images/mpesa.png",
   },
@@ -45,7 +44,7 @@ const events = [
     id: 3,
     title: "AI Conference",
     date: "2024-02-20",
-    location: "Online",
+    location: "Online, Zoom",
     type: "Tech",
     image: "/dummy/four.jpeg",
   },

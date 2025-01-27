@@ -42,15 +42,9 @@ const data = {
   navMain: [
     {
       title: "Dashboard",
-      url: "#",
+      url: "/dashboard/attendee",
       icon: LayoutPanelTopIcon,
-      items: [
-        {
-          title: "Overview",
-          url: "/dashboard/attendee",
-        },
-       
-      ],
+      isActive: true,
     },
     {
       title: "Events",

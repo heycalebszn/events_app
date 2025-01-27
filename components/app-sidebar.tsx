@@ -3,7 +3,6 @@
 import * as React from "react"
 import { NavMain } from "@/components/nav-main"
 import { NavUser } from "@/components/nav-user"
-import { TeamSwitcher } from "@/components/team-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -36,11 +35,6 @@ interface NavItemType {
 }
 
 // Define a Team type that matches the TeamSwitcher expectations
-interface Team {
-  name: string
-  logo: React.ElementType
-  plan: string
-}
 
 const data = {
   user: {
@@ -49,75 +43,64 @@ const data = {
     avatar: "/avatars/shadcn.jpg",
   },
   // Remove the 'as const' to make it mutable
-  teams: [
-    {
-      name: "Acme Events",
-      logo: PartyPopperIcon,
-      plan: "Enterprise",
-    },
-    {
-      name: "City Tickets",
-      logo: TagIcon,
-      plan: "Startup",
-    },
-  ] as Team[],
+ 
   navMain: [
     {
       title: "Dashboard",
-      url: "/dashboard/attendee",
+      url: "/dashboard/organizer/attendee",
       icon: LayoutPanelTopIcon,
       isActive: true,
     },
     {
       title: "Events",
-      url: "/events",
+      url: "/dashboard/organizer/events",
       icon: PartyPopperIcon,
       items: [
         {
           title: "All Events",
-          url: "/events",
+          url: "/dashboard/organizer/events",
         },
         {
           title: "Create Event",
-          url: "/events/create",
+          url: "/dashboard/organizer/create-events",
         },
-        {
-          title: "Categories",
-          url: "/events/categories",
-        },
+        // {
+        //   title: "Categories",
+        //   url: "/events/categories",
+        // },
       ],
     },
     {
       title: "Ticketing",
-      url: "/ticketing",
+      url: "#",
       icon: TagIcon,
       items: [
         {
           title: "Sell Tickets",
-          url: "/ticketing/sell",
+          url: "/dashboard/organizer/sell-tickets",
         },
         {
-          title: "Manage Orders",
-          url: "/ticketing/orders",
+          title: "Manage Tickets",
+          url: "/dashboard/organizer/manage-tickets",
         },
-        {
-          title: "Pricing",
-          url: "/ticketing/pricing",
-        },
+        // {
+        //   title: "Pricing",
+        //   url: "/ticketing/pricing",
+        // },
       ],
     },
     {
       title: "Attendees",
-      url: "/attendees",
+      url: "#",
       icon: UsersIcon,
       items: [
         {
           title: "Attendee List",
-          url: "/attendees/list",
+          url: "/dashboard/organizer/view-attendees",
         },
         {
           title: "Check-in",
-          url: "/attendees/check-in",
+          url: "/dashboard/organizer/attendees-checkin",
         },
       ],
     },
@@ -128,11 +111,11 @@ const data = {
       items: [
         {
           title: "Invite Speaker",
-          url: "#",
+          url: "/dashboard/organizer/invite-speaker",
         },
         {
           title: "Speaker Lists",
-          url: "#",
+          url: "/dashboard/organizer/view-speakers",
         },
       ],
     },
@@ -143,51 +126,51 @@ const data = {
       items: [
         {
           title: "View Vendors",
-          url: "#",
+          url: "/dashboard/organizer/view-vendors",
         },
       ],
     },
     {
       title: "Analytics",
-      url: "/analytics",
+      url: "/dashboard/organizer/analytics",
       icon: ChartColumnIncreasingIcon,
       items: [
         {
           title: "Sales Report",
-          url: "/analytics/sales",
+          url: "#",
         },
         {
           title: "Attendance",
-          url: "/analytics/attendance",
+          url: "#",
         },
       ],
     },
     {
       title: "Settings",
-      url: "/settings",
+      url: "#",
       icon: SettingsIcon,
       items: [
         {
           title: "General",
-          url: "/settings/general",
+          url: "/dashboard/organizer/settings",
         },
         {
           title: "Team",
-          url: "/settings/team",
+          url: "#",
         },
         {
           title: "Billing",
-          url: "/settings/billing",
+          url: "#",
         },
         {
           title: "Integrations",
-          url: "/settings/integrations",
+          url: "#",
         },
       ],
     },
     {
       title: "Help & Support",
-      url: "/support",
+      url: "/dashboard/organizer/support",
       icon: CircleHelpIcon,
     },
   ] as NavItemType[],
@@ -197,7 +180,9 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" className="bg-white text-black" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+      <div className="p-4 group-data-[collapsible=icon]:hidden">
+          <h2 className="text-md font-semibold">Organizer Dashboard</h2>
+        </div>
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
