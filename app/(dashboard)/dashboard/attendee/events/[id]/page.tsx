@@ -21,10 +21,3 @@ export default async function EventPage({ params }: Props) {
   )
 }
 
-// Make sure generateMetadata is properly typed if you need it
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: `Event Details | Events Palour`,
-    description: "View event details and get tickets",
-  }
-}
