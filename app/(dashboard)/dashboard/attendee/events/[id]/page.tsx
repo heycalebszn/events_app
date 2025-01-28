@@ -1,12 +1,11 @@
 import { Suspense } from 'react'
 import EventDetails from "../../components/event/EventDetails"
-import type { Metadata } from "next"
 import { EventDetailsSkeleton } from "./loading"
+import type { Metadata } from "next"
 
-interface EventPageProps {
-  params: {
-    id: string
-  }
+type Props = {
+  params: { id: string }
+  searchParams: { [key: string]: string | string[] | undefined }
 }
 
 export const metadata: Metadata = {
@@ -14,10 +13,18 @@ export const metadata: Metadata = {
   description: "View event details and get tickets",
 }
 
-export default function EventPage({ params }: EventPageProps) {
+export default async function EventPage({ params }: Props) {
   return (
     <Suspense fallback={<EventDetailsSkeleton />}>
       <EventDetails eventId={params.id} />
     </Suspense>
   )
+}
+
+// Make sure generateMetadata is properly typed if you need it
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: `Event Details | Events Palour`,
+    description: "View event details and get tickets",
+  }
 }
