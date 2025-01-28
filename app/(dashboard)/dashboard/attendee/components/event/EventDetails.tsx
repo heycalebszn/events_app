@@ -1,6 +1,6 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import {  useRouter } from "next/navigation"
 import { getEventById } from "@/lib/data/mockData"
 import Image from "next/image"
 import { useState, useEffect } from "react"
@@ -42,6 +42,9 @@ interface TimeLeft {
   hours: number
   minutes: number
   seconds: number
+}
+interface EventDetailsProps {
+  eventId: string
 }
 
 function CountdownTimer({ targetDate }: { targetDate: Date }) {
@@ -89,8 +92,8 @@ function CountdownTimer({ targetDate }: { targetDate: Date }) {
   )
 }
 
-export default function EventDetails() {
-  const { id } = useParams()
+export default function EventDetails({ eventId }: EventDetailsProps) {
+ 
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -103,7 +106,7 @@ export default function EventDetails() {
     const fetchEvent = async () => {
       try {
         setLoading(true)
-        const eventData = await getEventById(Number(id))
+        const eventData = await getEventById(Number(eventId))
         if (eventData) {
           setEvent(eventData)
           setTickets(eventData.tickets)
@@ -118,7 +121,7 @@ export default function EventDetails() {
     }
 
     fetchEvent()
-  }, [id])
+  }, [eventId])
 
   const updateTicketQuantity = (id: number, increment: boolean) => {
     setTickets(
