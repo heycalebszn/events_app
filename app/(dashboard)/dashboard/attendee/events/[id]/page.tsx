@@ -6,6 +6,12 @@ export const metadata: Metadata = {
   description: "View event details and get tickets",
 }
 
-export default function EventPage({ params }: { params: { id: string } }) {
+interface PageProps {
+  params: {
+    id: string;
+  }
+}
+
+export default function EventPage({ params }: PageProps) {
   return <EventDetails eventId={params.id} />
 }
