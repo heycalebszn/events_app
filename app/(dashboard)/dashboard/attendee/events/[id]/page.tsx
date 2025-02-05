@@ -1,17 +1,17 @@
 import EventDetails from "../../components/event/EventDetails"
-import { Metadata } from "next"
+import type { Metadata } from "next";
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Event Details | Events Palour",
-    description: "View event details and get tickets"
+export const metadata: Metadata = {
+  title: "Event Details | Events Palour",
+  description: "View event details and get tickets",
+}
+
+interface PageProps {
+  params: {
+    id: string;
   }
 }
 
-export default function EventPage({ 
-  params 
-}: { 
-  params: { id: string } 
-}) {
+export default function EventPage({ params }: PageProps) {
   return <EventDetails eventId={params.id} />
 }
