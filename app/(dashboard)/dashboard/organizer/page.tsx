@@ -21,8 +21,8 @@ const OrganizerDashboardPage: React.FC = () => {
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <DashboardCard title="Upcoming Events" value="3" icon={Calendar} />
-        <DashboardCard title="Total Tickets" value="8" icon={TicketIcon} />
-        <DashboardCard title="Total Spent" value="$450" icon={DollarSign} />
+        <DashboardCard title="Total Tickets Sold" value="8" icon={TicketIcon} />
+        <DashboardCard title="Total Amount Received" value="$450" icon={DollarSign} />
         <DashboardCard title="Attended Events" value="12" icon={UserCheck} />
       </div>
 
