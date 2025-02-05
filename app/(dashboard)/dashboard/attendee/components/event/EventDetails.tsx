@@ -89,7 +89,7 @@ function CountdownTimer({ targetDate }: { targetDate: Date }) {
   )
 }
 
-export default function EventDetails() {
+export default function EventDetails({ eventId }: { eventId: string }) {
   const { id } = useParams()
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
@@ -118,7 +118,7 @@ export default function EventDetails() {
     }
 
     fetchEvent()
-  }, [id])
+  }, [eventId, id])
 
   const updateTicketQuantity = (id: number, increment: boolean) => {
     setTickets(
