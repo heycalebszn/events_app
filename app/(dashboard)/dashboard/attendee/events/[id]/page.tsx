@@ -1,14 +1,18 @@
 import EventDetails from "../../components/event/EventDetails"
-import type { Metadata } from "next";
-
+import type { Metadata } from "next"
 
 export const metadata: Metadata = {
-  title: "Exlore Events| Events Palour",
-  description: "Explore events and attend with ease",
-};
+  title: "Event Details | Events Palour",
+  description: "View event details and get tickets",
+}
 
+// Define the props interface with Promise params
+interface PageProps {
+  params: Promise<{ id: string }>
+}
 
-
-export default function EventPage() {
-  return <EventDetails />
+// Update the page component to handle async params
+export default async function EventPage(props: PageProps) {
+  const params = await props.params
+  return <EventDetails eventId={params.id} />
 }

@@ -1,95 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useState  } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { MapPin, Calendar, Search, ChevronLeft, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { addDays, isSameDay, isWithinInterval, startOfDay, endOfDay, startOfWeek, endOfWeek } from "date-fns"
+import { addDays, isSameDay, isWithinInterval, startOfDay, endOfDay, startOfWeek, endOfWeek, parseISO } from "date-fns"
 import { DatePickerWithRange } from "@/components/shared/date-time-picker"
 import type { DateRange } from "react-day-picker"
+import { events } from "@/lib/data/mockData"
+import type { Event } from "@/types/event"
 
-const filters = [
-  "All",
-  "Online",
-  "Festivals",
-  "Conference",
-  "Tech",
-  "Outdoor",
-  // "Ventures",
-  "Networking",
-  "Workshops",
-]
+const filters = ["All", "Online", "Festivals", "Conference", "Tech", "Outdoor", "Networking", "Workshops"]
 
-const events = [
-  {
-    id: 1,
-    title: "Nairobi VC Dinner Night",
-    date: "2024-01-31",
-    location: "Nairobi, Kenya",
-    type: "Business",
-    image: "/images/logo.jpg",
-  },
-  {
-    id: 2,
-    title: "Tech Startup Expo",
-    date: "2024-01-27",
-    location: "Online, Google Meet",
-    type: "Tech",
-    image: "/images/mpesa.png",
-  },
-  {
-    id: 3,
-    title: "AI Conference",
-    date: "2024-02-20",
-    location: "Online, Zoom",
-    type: "Tech",
-    image: "/dummy/four.jpeg",
-  },
-  {
-    id: 4,
-    title: "Outdoor Adventure Meetup",
-    date: "2024-03-01",
-    location: "Nairobi National Park",
-    type: "Outdoor",
-    image: "/dummy/three.jpeg",
-  },
-  {
-    id: 5,
-    title: "Startup Networking Event",
-    date: "2024-03-10",
-    location: "Kigali, Rwanda",
-    type: "Networking",
-    image: "/dummy/two.jpeg",
-  },
-  {
-    id: 6,
-    title: "Wanati party",
-    date: "2024-03-15",
-    location: "Nyali, Kenya",
-    type: "Festivals",
-    image: "/dummy/one.jpg",
-  },
-  {
-    id: 7,
-    title: "Blockchain Workshop",
-    date: "2024-03-20",
-    location: "Nairobi, Kenya",
-    type: "Workshops",
-    image: "/dummy/one.jpg",
-  },
-]
-
-interface Event {
-  id: number
-  title: string
-  date: string
-  location: string
-  type: string
-  image: string
-}
 
 export default function EventsList() {
   const [selectedFilter, setSelectedFilter] = useState("All")
@@ -108,24 +33,40 @@ export default function EventsList() {
   }
 
   const filterEventsByDate = (event: Event) => {
-    const eventDate = new Date(event.date)
+    const eventStartDate = parseISO(event.startDate)
+    const eventEndDate = parseISO(event.endDate)
     const today = new Date()
 
     switch (dateFilter) {
       case "today":
-        return isSameDay(eventDate, today)
+        return isSameDay(eventStartDate, today) || isWithinInterval(today, { start: eventStartDate, end: eventEndDate })
       case "tomorrow":
-        return isSameDay(eventDate, addDays(today, 1))
+        const tomorrow = addDays(today, 1)
+        return (
+          isSameDay(eventStartDate, tomorrow) ||
+          isWithinInterval(tomorrow, { start: eventStartDate, end: eventEndDate })
+        )
       case "weekend":
         const weekStart = startOfWeek(today)
         const weekEnd = endOfWeek(today)
-        return isWithinInterval(eventDate, { start: weekStart, end: weekEnd })
+        return (
+          isWithinInterval(eventStartDate, { start: weekStart, end: weekEnd }) ||
+          isWithinInterval(eventEndDate, { start: weekStart, end: weekEnd }) ||
+          (eventStartDate <= weekStart && eventEndDate >= weekEnd)
+        )
       case "custom":
         if (dateRange?.from && dateRange?.to) {
-          return isWithinInterval(eventDate, {
-            start: startOfDay(dateRange.from),
-            end: endOfDay(dateRange.to),
-          })
+          return (
+            isWithinInterval(eventStartDate, {
+              start: startOfDay(dateRange.from),
+              end: endOfDay(dateRange.to),
+            }) ||
+            isWithinInterval(eventEndDate, {
+              start: startOfDay(dateRange.from),
+              end: endOfDay(dateRange.to),
+            }) ||
+            (eventStartDate <= dateRange.from && eventEndDate >= dateRange.to)
+          )
         }
         return true
       default:
@@ -262,15 +203,20 @@ export default function EventsList() {
               <CardTitle>{event.title}</CardTitle>
               <div className="flex items-center mt-2">
                 <Calendar className="w-4 h-4 mr-2" />
-                <span className="text-sm">{new Date(event.date).toLocaleDateString()}</span>
+                <span className="text-sm">
+                  {new Date(event.startDate).toLocaleDateString()} - {new Date(event.endDate).toLocaleDateString()}
+                </span>
               </div>
               <div className="flex items-center mt-2">
                 <MapPin className="w-4 h-4 mr-2" />
                 <span className="text-sm">{event.location}</span>
               </div>
+              {/* <div className="mt-2">
+                <CountdownTimer targetDate={new Date(event.startDate)} />
+              </div> */}
             </CardContent>
             <CardFooter>
-              <Link href={`/events/${event.id}`} passHref>
+              <Link href={`/dashboard/attendee/events/${event.id}`} passHref>
                 <Button>View Details</Button>
               </Link>
             </CardFooter>
