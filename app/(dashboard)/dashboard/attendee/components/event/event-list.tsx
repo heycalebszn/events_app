@@ -7,24 +7,24 @@ const events = [
     id: 1,
     title: "Summer Music Festival",
     date: "Aug 15-17, 2023",
-    location: "Central Park, New York",
-    price: 75,
+    location: "Nairobi Uni, Nairobi - Kenya",
+    price: 7500,
     type: "Music",
   },
   {
     id: 2,
     title: "Food & Wine Expo",
     date: "Sep 5, 2023",
-    location: "Convention Center, mombasa",
-    price: 45,
+    location: "Convention Center, mombasa - Kenya",
+    price: 4500,
     type: "Food & Drink",
   },
   {
     id: 3,
     title: "Tech Conference 2023",
     date: "Oct 10-12, 2023",
-    location: "Moscone Center, San Francisco",
-    price: 299,
+    location: "Moscone Center, San Francisco - USA",
+    price: 29900,
     type: "Technology",
   },
 ]
@@ -43,7 +43,7 @@ export default function EventList() {
             <Badge>{event.type}</Badge>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <p className="text-lg font-semibold">${event.price}</p>
+            <p className="text-lg font-semibold">Kes {event.price}</p>
             <Button>View Details</Button>
           </CardFooter>
         </Card>
