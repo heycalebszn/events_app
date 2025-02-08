@@ -1,4 +1,4 @@
-import EventDetails from "../../../../dashboard/attendee/components/event/EventDetails"
+import EventDetails from "../../components/event/EventDetails"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -6,15 +6,13 @@ export const metadata: Metadata = {
   description: "View event details and get tickets",
 }
 
-type Props = {
-  params: { id: string }
-  searchParams: { [key: string]: string | string[] | undefined }
+// Define the props interface with Promise params
+interface PageProps {
+  params: Promise<{ id: string }>
 }
 
-export default function EventPage({ params }: Props) {
+// Update the page component to handle async params
+export default async function EventPage(props: PageProps) {
+  const params = await props.params
   return <EventDetails eventId={params.id} />
 }
-
-// Type-safe route segment config
-export const dynamic = 'force-dynamic'
-export const dynamicParams = true
