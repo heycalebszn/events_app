@@ -14,14 +14,6 @@ const nextConfig = {
       }
     ],
   },
-  transpilePackages: ['leaflet', 'react-leaflet'],
-  webpack: (config: { module: { rules: { test: RegExp; use: string[]; }[]; }; }) => {
-    config.module.rules.push({
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader'],
-    })
-    return config
-  },
 };
 
 module.exports = nextConfig;
