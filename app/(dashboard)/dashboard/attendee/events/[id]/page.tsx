@@ -1,5 +1,5 @@
 import EventDetails from "../../components/event/EventDetails"
-import type { Metadata } from "next";
+import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "Event Details | Events Palour",
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 interface PageProps {
   params: {
-    id: string;
+    id: string
   }
 }
 

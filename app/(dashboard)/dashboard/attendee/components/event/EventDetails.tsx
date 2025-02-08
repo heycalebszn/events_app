@@ -90,7 +90,6 @@ function CountdownTimer({ targetDate }: { targetDate: Date }) {
 }
 
 export default function EventDetails({ eventId }: { eventId: string }) {
-  
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -243,16 +242,14 @@ export default function EventDetails({ eventId }: { eventId: string }) {
                 <div className="text-2xl sm:text-3xl font-bold">{getCurrentEventDay().getDate()}</div>
               </div>
               <div className="space-y-2">
-
                 <div className="flex items-center gap-2 text-gray-600">
-                
-                    <Calendar className="w-5 h-5" />
-                    <span>{`${formatEventTime(startDate)} - ${formatEventTime(endDate)}`}</span>
+                  <Calendar className="w-5 h-5" />
+                  <span>{`${formatEventTime(startDate)} - ${formatEventTime(endDate)}`}</span>
                 </div>
                 {isMultiDayEvent && (
                   <div className="flex items-center gap-2 text-gray-600">
-                     <MapPin className="w-5 h-5" />
-                  <span>{event.location}</span>
+                    <MapPin className="w-5 h-5" />
+                    <span>{event.location}</span>
                   </div>
                 )}
               </div>
