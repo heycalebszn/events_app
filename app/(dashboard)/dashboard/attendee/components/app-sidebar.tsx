@@ -55,6 +55,10 @@ const data = {
           title: "All Events",
           url: "/dashboard/attendee/events",
         },
+        {
+          title: "Events Near You",
+          url: "/dashboard/attendee/events/near-you",
+        },
       ],
     },
     {
