@@ -5,9 +5,8 @@ import dynamic from "next/dynamic"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { MapPin } from "lucide-react"
-import L from "leaflet"
-import "leaflet/dist/leaflet.css"
 import ReactDOMServer from 'react-dom/server'
+import type { DivIcon, Icon, LatLngExpression } from 'leaflet'
 
 // Dynamic imports for map components
 const MapContainer = dynamic(
@@ -27,7 +26,6 @@ const Popup = dynamic(
   { ssr: false }
 )
 
-
 const events = [
   { id: 1, name: "Summer Music Festival", lat: 40.7829, lng: -73.9654, type: "Music" },
   { id: 2, name: "Food & Wine Expo", lat: -4.0435, lng: 39.6682, type: "Food & Drink" },
@@ -38,21 +36,6 @@ const eventColors = {
   Music: "bg-red-500",
   "Food & Drink": "bg-orange-500",
   Technology: "bg-blue-500"
-}
-
-// Create custom icon using Lucide's MapPin
-const createCustomIcon = (color: string) => {
-  const html = ReactDOMServer.renderToString(
-    <MapPin className={color.replace('bg-',  'text-')} size={24}  />
-  );
-  
-  return L.divIcon({
-    html,
-    className: 'custom-map-marker',
-    iconSize: [24, 24],
-    iconAnchor: [12, 24],
-    popupAnchor: [0, -24],
-  });
 }
 
 function MapSkeleton() {
@@ -96,19 +79,48 @@ function MapSkeleton() {
 
 function MapComponent() {
   const [isMounted, setIsMounted] = useState(false)
+  const [leaflet, setLeaflet] = useState<typeof import('leaflet') | null>(null)
 
   useEffect(() => {
-    setIsMounted(true)
+    const loadDependencies = async () => {
+      const L = await import('leaflet')
+      // Add Leaflet CSS to head
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'
+      document.head.appendChild(link)
+      
+      setLeaflet(L)
+      setIsMounted(true)
+    }
+
+    loadDependencies()
   }, [])
 
-  if (!isMounted) {
+  const createCustomIcon = (color: string): DivIcon | Icon | undefined => {
+    if (!leaflet) return undefined;
+    
+    const html = ReactDOMServer.renderToString(
+      <MapPin className={color.replace('bg-', 'text-')} size={24} />
+    );
+    
+    return leaflet.divIcon({
+      html,
+      className: 'custom-map-marker',
+      iconSize: [24, 24],
+      iconAnchor: [12, 24],
+      popupAnchor: [0, -24],
+    });
+  }
+
+  if (!isMounted || !leaflet) {
     return <MapSkeleton />
   }
 
   return (
     <div className="relative">
       <MapContainer 
-        center={[0, 0]} 
+        center={[0, 0] as LatLngExpression} 
         zoom={2} 
         style={{ height: "600px", width: "100%" }} 
         className="rounded-lg"
@@ -120,7 +132,7 @@ function MapComponent() {
         {events.map((event) => (
           <Marker
             key={event.id}
-            position={[event.lat, event.lng]}
+            position={[event.lat, event.lng] as LatLngExpression}
             icon={createCustomIcon(eventColors[event.type as keyof typeof eventColors])}
           >
             <Popup>
@@ -149,7 +161,7 @@ function EventList() {
               key={event.id}
               className="flex items-center cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 p-2 rounded transition-colors"
             >
-              <MapPin className={`w-4 h-4 mr-2  ${eventColors[event.type as keyof typeof eventColors].replace('bg-', 'text-')}`} />
+              <MapPin className={`w-4 h-4 mr-2 ${eventColors[event.type as keyof typeof eventColors].replace('bg-', 'text-')}`} />
               {event.name}
             </li>
           ))}
@@ -160,9 +172,5 @@ function EventList() {
 }
 
 export default function EventMap() {
-  useEffect(() => {
-    // Load Leaflet CSS
-  }, [])
-
   return <MapComponent />
 }
