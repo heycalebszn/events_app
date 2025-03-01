@@ -10,7 +10,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { TagIcon } from "@/components/icons/ticket"
+// import { TagIcon } from "@/components/icons/ticket"
 import { UsersIcon } from "@/components/icons/users"
 import { PartyPopperIcon } from "@/components/icons/callendar"
 import { SettingsIcon } from "@/components/icons/settings"
@@ -57,12 +57,12 @@ const data = {
       icon: PartyPopperIcon,
       items: [
         {
-          title: "All Events",
-          url: "/dashboard/organizer/events",
-        },
-        {
           title: "Create Event",
           url: "/dashboard/organizer/create-events",
+        },
+        {
+          title: "Manage Events",
+          url: "/dashboard/organizer/manage-events",
         },
         // {
         //   title: "Categories",
@@ -70,25 +70,25 @@ const data = {
         // },
       ],
     },
-    {
-      title: "Ticketing",
-      url: "#",
-      icon: TagIcon,
-      items: [
-        {
-          title: "Sell Tickets",
-          url: "/dashboard/organizer/sell-tickets",
-        },
-        {
-          title: "Manage Tickets",
-          url: "/dashboard/organizer/manage-tickets",
-        },
-        // {
-        //   title: "Pricing",
-        //   url: "/ticketing/pricing",
-        // },
-      ],
-    },
+    // {
+    //   title: "Ticketing",
+    //   url: "#",
+    //   icon: TagIcon,
+    //   items: [
+    //     {
+    //       title: "Sell Tickets",
+    //       url: "/dashboard/organizer/sell-tickets",
+    //     },
+    //     {
+    //       title: "Manage Tickets",
+    //       url: "/dashboard/organizer/manage-tickets",
+    //     },
+    //     // {
+    //     //   title: "Pricing",
+    //     //   url: "/ticketing/pricing",
+    //     // },
+    //   ],
+    // },
     {
       title: "Attendees",
       url: "#",
@@ -119,17 +119,17 @@ const data = {
         },
       ],
     },
-    {
-      title: "Vendor",
-      url: "#",
-      icon: StoreIcon ,
-      items: [
-        {
-          title: "View Vendors",
-          url: "/dashboard/organizer/view-vendors",
-        },
-      ],
-    },
+    // {
+    //   title: "Vendor",
+    //   url: "#",
+    //   icon: StoreIcon ,
+    //   items: [
+    //     {
+    //       title: "View Vendors",
+    //       url: "/dashboard/organizer/view-vendors",
+    //     },
+    //   ],
+    // },
     {
       title: "Analytics",
       url: "/dashboard/organizer/analytics",

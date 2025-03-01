@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import CreateEventForm from '../components/create-event-form'
 
 
 export const metadata: Metadata = {
@@ -6,6 +7,6 @@ export const metadata: Metadata = {
   description: "Get Started creating events and enjoy seamless services of events creation",
 };
 
-export default function CreateEventsPage() {
-  
+export default function CreateEventPage() {
+   return <CreateEventForm />
 }
