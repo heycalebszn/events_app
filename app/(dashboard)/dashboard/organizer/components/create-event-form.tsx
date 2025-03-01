@@ -63,12 +63,19 @@ const eventSchema = z.object({
 
 export type EventFormData = z.infer<typeof eventSchema>
 
-// Fix: Define a separate interface for the form prop to avoid circular reference
+// Define the form props type correctly
 export interface FormProps {
   form: ReturnType<typeof useForm<EventFormData>>
 }
 
-const steps = [
+type StepComponentProps = {
+  component: React.ComponentType<FormProps>
+  title: string
+  id: number
+  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
+}
+
+const steps: StepComponentProps[] = [
   { id: 1, title: "Event Details", icon: Tag, component: EventDetailsStep },
   { id: 2, title: "Date and Time", icon: Calendar, component: DateTimeStep },
   { id: 3, title: "Location", icon: MapPin, component: LocationStep },
@@ -112,7 +119,7 @@ export default function CreateEventForm() {
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
       <div className="flex items-center justify-between space-y-2">
-        <h2 className="text-2xl font-bold tracking-tight">Create Event</h2>
+        <h2 className="text-3xl font-bold tracking-tight">Create Event</h2>
       </div>
       <Progress value={(step / totalSteps) * 100} className="w-full" />
       <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -123,7 +130,9 @@ export default function CreateEventForm() {
               <CardTitle>{currentStep?.title}</CardTitle>
             </div>
           </CardHeader>
-          <CardContent>{currentStep && <currentStep.component form={form} />}</CardContent>
+          <CardContent>
+            {currentStep && <currentStep.component form={form} />}
+          </CardContent>
           <CardFooter className="flex justify-between">
             <Button type="button" variant="outline" onClick={prevStep} disabled={step === 1}>
               Previous

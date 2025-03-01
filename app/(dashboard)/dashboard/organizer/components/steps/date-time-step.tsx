@@ -2,19 +2,15 @@ import { Label } from "@/components/ui/label"
 import { DatePickerWithRange } from "@/components/shared/date-time-picker"
 import { useState } from "react"
 import type { DateRange } from "react-day-picker"
+import type { FormProps } from "../create-event-form" // Import the FormProps from your main form file
 
-interface FormProps {
-  setValue: (name: string, value: DateRange | string) => void;
-}
-
-export function DateTimeStep({ form }: { form: FormProps }) {
-  const { setValue } = form
+export function DateTimeStep({ form }: FormProps) {
   const [date, setDate] = useState<DateRange | undefined>()
 
   const onDateSelect = (selectedDate: DateRange | undefined) => {
     setDate(selectedDate)
     if (selectedDate?.from && selectedDate?.to) {
-      setValue("dateRange", { from: selectedDate.from, to: selectedDate.to })
+      form.setValue("dateRange", { from: selectedDate.from, to: selectedDate.to })
     }
   }
 
@@ -30,7 +26,7 @@ export function DateTimeStep({ form }: { form: FormProps }) {
           <input
             type="time"
             id="startTime"
-            onChange={(e) => setValue("startTime", e.target.value)}
+            onChange={(e) => form.setValue("startTime", e.target.value)}
             className="w-full p-2 border rounded"
           />
         </div>
@@ -39,7 +35,7 @@ export function DateTimeStep({ form }: { form: FormProps }) {
           <input
             type="time"
             id="endTime"
-            onChange={(e) => setValue("endTime", e.target.value)}
+            onChange={(e) => form.setValue("endTime", e.target.value)}
             className="w-full p-2 border rounded"
           />
         </div>
@@ -47,4 +43,3 @@ export function DateTimeStep({ form }: { form: FormProps }) {
     </div>
   )
 }
-
