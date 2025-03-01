@@ -18,7 +18,6 @@ const OrganizerDashboardPage: React.FC = () => {
           {timestamp}
         </p>
       </div>
-
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <DashboardCard title="Upcoming Events" value="3" icon={Calendar} />
         <DashboardCard title="Total Tickets Sold" value="8" icon={TicketIcon} />
