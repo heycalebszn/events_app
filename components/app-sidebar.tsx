@@ -18,7 +18,7 @@ import { CircleHelpIcon } from "@/components/icons/circle-help"
 import { ChartColumnIncreasingIcon } from "@/components/icons/bar-chart"
 import { LayoutPanelTopIcon } from "@/components/icons/dashboardIcon"
 import  KeynoteSpeakerIcon  from "@/components/icons/keynote-speaker"
-import  {StoreIcon}   from "@/components/icons/store"
+// import  {StoreIcon}   from "@/components/icons/store"
 
 import { LucideIcon } from "lucide-react"
 
