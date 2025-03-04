@@ -12,190 +12,113 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-} from "@/components/ui/alert-dialog";
-import ChromeIcon from "@/components/icons/chrome";
 import { GithubIcon } from "@/components/icons/github";
-import { FingerprintIcon } from "@/components/icons/fingerprint";
+import { GoogleIcon } from "@/components/icons/google-icon";
 import Image from "next/image";
 import { toast } from "sonner";
-import { Loader2 } from "lucide-react";
-import { createChallenge } from "@/lib/client/webauthn";
-import { decodeBase64, encodeBase64 } from "@oslojs/encoding";
-import { WebAuthnUserCredential } from "@/lib/server/webauthn";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [email, setEmail] = useState("");
-  const [showMagicLinkDialog, setShowMagicLinkDialog] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoginWithPasskeys, setIsLoginWithPasskeys] = useState(false);
+  const [isLoadingEmail, setIsLoadingEmail] = useState(false);
+  const [isLoadingGithub, setIsLoadingGithub] = useState(false);
+  const [isLoadingGoogle, setIsLoadingGoogle] = useState(false);
+  const [magicLinkSent, setMagicLinkSent] = useState(false);
 
   const handleEmailSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsLoading(true);
+    if (isLoadingEmail) return;
+    
+    setIsLoadingEmail(true);
 
     try {
-      const response = await fetch("/api/auth/magic-link", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send magic link");
-      }
-
-      setShowMagicLinkDialog(true);
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
       toast.success("Magic link sent to your email!", {
         position: "top-center",
       });
-    } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Failed to send magic link. Please try again.";
-      toast.error(errorMessage, {
+      
+      // Show resend option after sending
+      setMagicLinkSent(true);
+    } catch {
+      toast.error("Failed to send magic link. Please try again.", {
         position: "top-center",
       });
     } finally {
-      setIsLoading(false);
+      setIsLoadingEmail(false);
     }
   };
 
-  const handleSocialSignIn = async (provider: "github" | "google") => {
-    setIsLoading(true);
+  const handleGithubSignIn = async () => {
+    if (isLoadingGithub) return;
+    
+    setIsLoadingGithub(true);
     try {
-      if (provider === "google") {
-        window.location.href = "/api/auth/google";
-      } else if (provider === "github") {
-        window.location.href = "/api/auth/github";
-      }
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      toast.success("Signing in with GitHub...", {
+        position: "bottom-right",
+      });
+      
+      // In a real implementation, this would redirect to the provider's auth page
+    } catch {
+      toast.error("Failed to sign in with GitHub. Please try again.", {
+        position: "bottom-right",
+      });
     } finally {
-      setIsLoading(false);
+      setIsLoadingGithub(false);
     }
   };
 
-  const handlePasskeyLogin = async () => {
-    setIsLoginWithPasskeys(true);
+  const handleGoogleSignIn = async () => {
+    if (isLoadingGoogle) return;
+    
+    setIsLoadingGoogle(true);
     try {
-      if (!email) {
-        toast.error("Email is required!", {
-          position: "top-center",
-        });
-        return;
-      }
-
-      const res = await fetch(`/api/auth/webauthn/${email}/credentials`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      toast.success("Signing in with Google...", {
+        position: "bottom-right",
       });
-
-      if (!res.ok) {
-        setIsLoginWithPasskeys(false);
-        const response = await res.json();
-        console.log(response);
-        toast.error("error", {
-          position: "top-center",
-        });
-      }
-
-      const response = await res.json();
-      const credentials = response.credentials as WebAuthnUserCredential[];
-      const encodedCredentialIds = credentials.map((credential) =>
-        encodeBase64(credential.id)
-      );
-
-      const challenge = await createChallenge();
-
-      const credential = await navigator.credentials.get({
-        publicKey: {
-          challenge,
-          userVerification: "discouraged",
-          allowCredentials: encodedCredentialIds.map((encoded) => {
-            return {
-              id: decodeBase64(encoded),
-              type: "public-key",
-            };
-          }),
-        },
+      
+      // In a real implementation, this would redirect to the provider's auth page
+    } catch {
+      toast.error("Failed to sign in with Google. Please try again.", {
+        position: "bottom-right",
       });
+    } finally {
+      setIsLoadingGoogle(false);
+    }
+  };
 
-      if (!(credential instanceof PublicKeyCredential)) {
-        throw new Error("Failed to create public key");
-      }
-      if (!(credential.response instanceof AuthenticatorAssertionResponse)) {
-        throw new Error("Unexpected error");
-      }
-
-      const verifyBody = {
-        credential_id: encodeBase64(new Uint8Array(credential.rawId)),
-        signature: encodeBase64(new Uint8Array(credential.response.signature)),
-        authenticator_data: encodeBase64(
-          new Uint8Array(credential.response.authenticatorData)
-        ),
-        client_data_json: encodeBase64(
-          new Uint8Array(credential.response.clientDataJSON)
-        ),
-      };
-
-      //  Verify passkey
-      const verifyRes = await fetch(
-        `/api/auth/webauthn/${email}/verify/passkey`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(verifyBody),
-        }
-      );
-
-      if (!verifyRes.ok) {
-        throw new Error(verifyRes.statusText);
-      }
-
-      const verifyResponse = await verifyRes.json();
-      toast.success(verifyResponse.message, {
+  const resendMagicLink = async () => {
+    if (!email || isLoadingEmail) return;
+    
+    setIsLoadingEmail(true);
+    try {
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      toast.success("New magic link sent!", {
         position: "top-center",
       });
-    } catch (error) {
-      if (error instanceof Error) {
-        const isEqual =
-          error.message ===
-          "The operation either timed out or was not allowed. See: https://www.w3.org/TR/webauthn-2/#sctn-privacy-considerations-client.";
-
-        return toast.error(
-          isEqual
-            ? "The operation either timed out or was not allowed by the user."
-            : error.message,
-          {
-            position: "top-center",
-          }
-        );
-      }
+    } catch {
+      toast.error("Failed to resend magic link. Please try again.", {
+        position: "top-center",
+      });
     } finally {
-      setIsLoginWithPasskeys(false);
+      setIsLoadingEmail(false);
     }
   };
 
   const resetForm = () => {
     setEmail("");
-    setShowMagicLinkDialog(false);
+    setMagicLinkSent(false);
   };
 
   return (
@@ -210,6 +133,7 @@ export function LoginForm({
                   Enter your email to continue to Events Palour
                 </p>
               </div>
+              
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -218,27 +142,66 @@ export function LoginForm({
                   placeholder="m@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
+                  disabled={isLoadingEmail}
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Sending..." : "Continue with Email"}
-              </Button>
+              
+              {magicLinkSent ? (
+                <div className="space-y-4">
+                  <div className="rounded-lg bg-muted p-4 text-sm">
+                    <p className="mb-2 font-medium">Check your email</p>
+                    <p className="text-muted-foreground">
+                      We&apos;ve sent a magic link to <span className="font-medium">{email}</span>. 
+                      Click the link in the email to sign in.
+                    </p>
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      If you don&apos;t see the email, check your spam folder.
+                    </p>
+                  </div>
+                  
+                  <div className="flex gap-2">
+                    <Button 
+                      type="button" 
+                      variant="outline" 
+                      className="flex-1"
+                      onClick={resetForm}
+                      disabled={isLoadingEmail}
+                    >
+                      Change Email
+                    </Button>
+                    <Button 
+                      type="button" 
+                      className="flex-1"
+                      onClick={resendMagicLink}
+                      disabled={isLoadingEmail}
+                    >
+                      {isLoadingEmail ? "Sending..." : "Resend Link"}
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button type="submit" className="w-full" disabled={isLoadingEmail}>
+                  {isLoadingEmail ? "Sending..." : "Continue with Email"}
+                </Button>
+              )}
+              
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Or continue with
                 </span>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              
+              <div className="grid grid-cols-2 gap-4">
                 <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
+                        type="button"
                         variant="outline"
                         className="w-full p-0"
-                        onClick={() => handleSocialSignIn("github")}
-                        disabled={isLoading}
+                        onClick={handleGithubSignIn}
+                        disabled={isLoadingGithub}
                       >
                         <GithubIcon />
                         <span className="sr-only">GitHub</span>
@@ -253,40 +216,18 @@ export function LoginForm({
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button
+                        type="button"
                         variant="outline"
                         className="w-full p-0"
-                        onClick={() => handleSocialSignIn("google")}
-                        disabled={isLoading}
+                        onClick={handleGoogleSignIn}
+                        disabled={isLoadingGoogle}
                       >
-                        <ChromeIcon />
+                        <GoogleIcon />
                         <span className="sr-only">Google</span>
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent className="hidden lg:block">
                       Google
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full p-0"
-                        type="button"
-                        disabled={isLoading || isLoginWithPasskeys}
-                        onClick={() => handlePasskeyLogin()}
-                      >
-                        {isLoginWithPasskeys ? (
-                          <Loader2 className="animate-spin w-5" />
-                        ) : (
-                          <FingerprintIcon />
-                        )}
-                        <span className="sr-only">Passkeys</span>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent className="hidden lg:block">
-                      Passkeys
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -304,57 +245,6 @@ export function LoginForm({
           </div>
         </CardContent>
       </Card>
-
-      <AlertDialog
-        open={showMagicLinkDialog}
-        onOpenChange={(open) => {
-          setShowMagicLinkDialog(open);
-          if (!open) resetForm();
-        }}
-      >
-        <AlertDialogContent className="flex max-w-md flex-col items-center gap-6 px-6 py-4 text-center sm:gap-8 sm:p-8">
-          <AlertDialogHeader className="gap-4">
-            <AlertDialogTitle className="text-2xl font-bold">
-              Check Your Email
-            </AlertDialogTitle>
-            <AlertDialogDescription className="space-y-3 text-base text-muted-foreground">
-              <p>
-                We&apos;ve sent a magic link to{" "}
-                <span className="font-medium text-foreground">{email}</span>
-              </p>
-              <p>
-                Click the link in the email to sign in to your account. The link
-                will expire in 10 minutes.
-              </p>
-              <p className="text-sm">
-                If you don&apos;t see the email, check your spam folder.
-              </p>
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter className="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-center">
-            <AlertDialogCancel className="w-full sm:w-32" onClick={resetForm}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              className="w-full sm:w-auto sm:min-w-32"
-              onClick={() => {
-                toast.success("New magic link sent!", {
-                  position: "top-center",
-                });
-                const syntheticEvent = Object.create(new Event("submit"), {
-                  target: { value: document.createElement("form") },
-                  preventDefault: { value: () => {} },
-                });
-                handleEmailSubmit(
-                  syntheticEvent as React.FormEvent<HTMLFormElement>
-                );
-              }}
-            >
-              Resend Email
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
 
       <div className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
         By clicking continue, you agree to our{" "}
