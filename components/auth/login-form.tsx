@@ -38,14 +38,14 @@ export function LoginForm({
       await new Promise(resolve => setTimeout(resolve, 800));
       
       toast.success("Magic link sent to your email!", {
-        position: "top-center",
+        position: "bottom-right",
       });
       
       // Show resend option after sending
       setMagicLinkSent(true);
     } catch {
       toast.error("Failed to send magic link. Please try again.", {
-        position: "top-center",
+        position: "bottom-right",
       });
     } finally {
       setIsLoadingEmail(false);
@@ -105,11 +105,11 @@ export function LoginForm({
       await new Promise(resolve => setTimeout(resolve, 800));
       
       toast.success("New magic link sent!", {
-        position: "top-center",
+        position: "bottom-right",
       });
     } catch {
       toast.error("Failed to resend magic link. Please try again.", {
-        position: "top-center",
+        position: "bottom-right",
       });
     } finally {
       setIsLoadingEmail(false);
@@ -130,7 +130,7 @@ export function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome</h1>
                 <p className="text-balance text-muted-foreground">
-                  Enter your email to continue to Events Palour
+                  Enter your email to continue to Event Parlour
                 </p>
               </div>
               
@@ -139,7 +139,7 @@ export function LoginForm({
                 <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
+                  placeholder="johndoe@gmail.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoadingEmail}
