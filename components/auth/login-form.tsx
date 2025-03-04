@@ -34,16 +34,26 @@ export function LoginForm({
     setIsLoadingEmail(true);
 
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      const response = await fetch("https://ep-backend-fzs9.onrender.com/api/v1/auth/magic-link", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }), // sending the entered email
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to send magic link");
+      }
+
       toast.success("Magic link sent to your email!", {
         position: "bottom-right",
       });
       
-      // Show resend option after sending
       setMagicLinkSent(true);
-    } catch {
+    } catch (error) {
+      console.error("Error sending magic link:", error);
       toast.error("Failed to send magic link. Please try again.", {
         position: "bottom-right",
       });
@@ -57,14 +67,10 @@ export function LoginForm({
     
     setIsLoadingGithub(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
       toast.success("Signing in with GitHub...", {
         position: "bottom-right",
       });
-      
-      // In a real implementation, this would redirect to the provider's auth page
     } catch {
       toast.error("Failed to sign in with GitHub. Please try again.", {
         position: "bottom-right",
@@ -79,14 +85,10 @@ export function LoginForm({
     
     setIsLoadingGoogle(true);
     try {
-      // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 500));
-      
       toast.success("Signing in with Google...", {
         position: "bottom-right",
       });
-      
-      // In a real implementation, this would redirect to the provider's auth page
     } catch {
       toast.error("Failed to sign in with Google. Please try again.", {
         position: "bottom-right",
@@ -101,13 +103,24 @@ export function LoginForm({
     
     setIsLoadingEmail(true);
     try {
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
+      const response = await fetch("https://ep-backend-fzs9.onrender.com/api/v1/auth/magic-link", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to resend magic link");
+      }
+
       toast.success("New magic link sent!", {
         position: "bottom-right",
       });
-    } catch {
+    } catch (error) {
+      console.error("Error resending magic link:", error);
       toast.error("Failed to resend magic link. Please try again.", {
         position: "bottom-right",
       });
